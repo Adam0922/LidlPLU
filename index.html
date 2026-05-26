@@ -8,7 +8,6 @@
     <title>Lidl PLU Gyakorló</title>
     
     <style>
-        /* --- ALAP SZÍNEK ÉS STÍLUSOK --- */
         :root {
             --bg: #1e1e2e;
             --panel: #2a2a3e;
@@ -35,24 +34,24 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100dvh; 
+            height: 100dvh;
             width: 100vw;
             overflow: hidden;
             -webkit-tap-highlight-color: transparent;
         }
 
         /* --- FŐMENÜ ÉS MÓDVÁLASZTÓ --- */
-        #menu-screen, #mode-screen {
+        #menu-screen, #mode-screen, #end-screen {
             text-align: center;
             width: 100%;
             max-width: 600px;
             padding: 20px;
         }
-        #mode-screen { display: none; }
-        
+        #mode-screen, #end-screen { display: none; }
+
         h1 { font-size: clamp(2rem, 5vw, 2.5rem); margin-bottom: 10px; }
         p { color: var(--subtext); font-size: 1.2rem; margin-bottom: 40px; }
-        
+
         .cat-btn {
             background-color: var(--panel);
             color: var(--text);
@@ -67,7 +66,7 @@
             transition: 0.2s;
         }
         .cat-btn:active { background-color: var(--surface); transform: scale(0.98); }
-        
+
         .mode-btn {
             background-color: transparent;
             color: var(--text);
@@ -91,6 +90,48 @@
             font-size: 1.2rem; margin-top: 30px; cursor: pointer; text-decoration: underline;
         }
 
+        /* --- VÉGE KÉPERNYŐ --- */
+        #end-screen {
+            display: none;
+        }
+        .end-emoji { font-size: 5rem; margin-bottom: 10px; }
+        .end-title { font-size: clamp(1.8rem, 5vw, 2.5rem); font-weight: bold; margin-bottom: 8px; color: var(--text); }
+        .end-subtitle { color: var(--subtext); font-size: 1.1rem; margin-bottom: 30px; }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: var(--panel);
+            border-radius: 12px;
+            padding: 16px 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+        .stat-icon { font-size: 1.8rem; }
+        .stat-value { font-size: 1.5rem; font-weight: bold; color: var(--text); }
+        .stat-label { font-size: 0.8rem; color: var(--subtext); text-align: center; }
+
+        .end-btn {
+            width: 100%;
+            padding: 18px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-bottom: 12px;
+            transition: 0.2s;
+        }
+        .end-btn:active { transform: scale(0.98); }
+        .end-btn-primary { background: #89b4fa; color: #1e1e2e; }
+        .end-btn-secondary { background: var(--panel); color: var(--text); }
+
         /* --- KASSZA MONITOR --- */
         #app-screen {
             display: none;
@@ -113,7 +154,9 @@
             padding: 0 20px;
             color: white;
         }
+        .top-bar-left { display: flex; align-items: center; gap: 16px; }
         .top-bar .counter { font-size: clamp(1rem, 2.5dvh, 1.4rem); font-weight: bold; }
+        .top-bar .timer { font-size: clamp(0.85rem, 2dvh, 1.1rem); color: #aaa; font-variant-numeric: tabular-nums; }
         .top-bar .back-btn {
             background: none; border: none; color: white;
             font-size: clamp(1rem, 2dvh, 1.1rem); font-weight: bold; cursor: pointer;
@@ -124,7 +167,7 @@
 
         /* BAL PANEL */
         .left-pane { flex: 1.3; display: flex; flex-direction: column; position: relative; }
-        
+
         .unit-badge {
             position: absolute; top: 2vmin; left: 2vmin;
             background: white; border: 2px solid #ccc; border-radius: 8px;
@@ -134,19 +177,19 @@
         }
         .unit-badge .icon { font-size: clamp(1.5rem, 4vmin, 2.5rem); font-weight: bold; margin-bottom: -5px; }
         .unit-badge .text { font-size: clamp(0.7rem, 1.5vmin, 1rem); color: #666; }
-        
+
         .product-name {
             flex: 1; display: flex; justify-content: center; align-items: center;
             font-size: clamp(2rem, 7dvh, 5rem); font-weight: bold; color: #333;
             text-align: center; padding: 2vmin 4vmin;
         }
-        
+
         .plu-bar {
-            background-color: var(--plu-bar); 
+            background-color: var(--plu-bar);
             height: 16dvh; min-height: 80px;
             display: flex; justify-content: center; align-items: center;
             font-size: clamp(3rem, 10dvh, 6rem); font-weight: bold; color: white;
-            transition: background-color 0.2s; /* Animáció a piros villanáshoz */
+            transition: background-color 0.2s;
         }
 
         /* JOBB PANEL */
@@ -154,25 +197,25 @@
             flex: 1; background-color: var(--bg-right); display: flex;
             flex-direction: column; padding: 2vmin; border-left: 2px solid #ddd;
         }
-        
+
         .input-row { display: flex; align-items: center; margin-bottom: 2vmin; }
-        
+
         .input-display {
             flex: 1; background: white; border-radius: 8px;
             height: 10dvh; min-height: 50px; display: flex; align-items: center; justify-content: flex-end;
             padding: 0 15px; font-size: clamp(2rem, 5dvh, 3.5rem); font-weight: bold; color: #333;
             margin-right: 1.5vmin; border: 2px solid #ddd;
         }
-        
+
         .streak-container { display: flex; flex-direction: column; gap: 0.5vmin; margin-right: 1.5vmin; }
         .streak-dot {
-            width: clamp(20px, 4vmin, 30px); height: clamp(15px, 2.5dvh, 25px); 
+            width: clamp(20px, 4vmin, 30px); height: clamp(15px, 2.5dvh, 25px);
             background-color: var(--streak-bg); border-radius: 4px; display: flex; justify-content: center; align-items: center;
             color: white; font-size: 0.8rem; font-weight: bold;
         }
-        
+
         .c-btn {
-            width: 10dvh; min-width: 50px; height: 10dvh; min-height: 50px; 
+            width: 10dvh; min-width: 50px; height: 10dvh; min-height: 50px;
             background: white; border: 2px solid #ddd; border-radius: 8px; font-size: clamp(1.5rem, 4dvh, 2.5rem); font-weight: bold; color: #333;
             cursor: pointer; display: flex; justify-content: center; align-items: center;
         }
@@ -189,12 +232,11 @@
         }
         .btn:active { filter: brightness(0.85); }
         .btn:disabled { cursor: not-allowed; opacity: 0.8; filter: none; }
-        
+
         .btn-num { background-color: var(--btn-num); }
         .btn-plu { background-color: var(--btn-plu); grid-row: span 2; }
         .btn-white { background-color: white; color: #aaa; font-size: clamp(0.7rem, 2dvh, 1.2rem); text-align: center; }
         .btn-ean { background-color: var(--btn-ean); color: #889988; font-size: clamp(1rem, 2.5dvh, 1.5rem); }
-        
     </style>
 </head>
 <body>
@@ -215,12 +257,24 @@
         <button class="back-text-btn" onclick="showMenu()">← Vissza a kategóriákhoz</button>
     </div>
 
+    <div id="end-screen">
+        <div class="end-emoji" id="end-emoji">🎉</div>
+        <div class="end-title" id="end-title">Gratulálok!</div>
+        <div class="end-subtitle" id="end-subtitle">Sikerült az összes terméket!</div>
+        <div class="stat-grid" id="stat-grid"></div>
+        <button class="end-btn end-btn-primary" onclick="restartGame()">🔄 Újra</button>
+        <button class="end-btn end-btn-secondary" onclick="showMenu()">🏠 Főoldal</button>
+    </div>
+
     <div id="app-screen">
         <div class="top-bar">
-            <div class="counter" id="counter-display">0 / 0</div>
+            <div class="top-bar-left">
+                <div class="counter" id="counter-display">0 / 0</div>
+                <div class="timer" id="timer-display" style="display:none;">⏱ 0:00</div>
+            </div>
             <button class="back-btn" onclick="showModeScreen()">← Vissza</button>
         </div>
-        
+
         <div class="main-container">
             <div class="left-pane">
                 <div class="unit-badge">
@@ -230,7 +284,7 @@
                 <div class="product-name" id="product-name">Termék Neve</div>
                 <div class="plu-bar" id="plu-hint">1234</div>
             </div>
-            
+
             <div class="right-pane">
                 <div class="input-row">
                     <div class="input-display" id="input-display"></div>
@@ -241,27 +295,27 @@
                     </div>
                     <button class="c-btn" onclick="pressC()">C</button>
                 </div>
-                
+
                 <div class="numpad">
                     <button class="btn btn-white" disabled>Sztornó</button>
                     <button class="btn btn-white" disabled>Nyugta<br>törlése</button>
                     <button class="btn btn-white" disabled>Göngyö-<br>leg</button>
                     <button class="btn" style="background:#add8e6; color:#555; font-size:clamp(0.7rem, 2dvh, 1.2rem);" disabled>Mennyi-<br>ség</button>
-                    
+
                     <button class="btn btn-num" onclick="pressNum('7')">7</button>
                     <button class="btn btn-num" onclick="pressNum('8')">8</button>
                     <button class="btn btn-num" onclick="pressNum('9')">9</button>
                     <button class="btn btn-plu" onclick="pressPlu()">PLU</button>
-                    
+
                     <button class="btn btn-num" onclick="pressNum('4')">4</button>
                     <button class="btn btn-num" onclick="pressNum('5')">5</button>
                     <button class="btn btn-num" onclick="pressNum('6')">6</button>
-                    
+
                     <button class="btn btn-num" onclick="pressNum('1')">1</button>
                     <button class="btn btn-num" onclick="pressNum('2')">2</button>
                     <button class="btn btn-num" onclick="pressNum('3')">3</button>
                     <button class="btn btn-ean" disabled>EAN</button>
-                    
+
                     <button class="btn btn-num" onclick="pressNum('0')">0</button>
                     <button class="btn btn-num" onclick="pressNum('00')">00</button>
                     <button class="btn btn-num" disabled>,</button>
@@ -345,16 +399,47 @@
 
         // --- ÁLLAPOTVÁLTOZÓK ---
         let activeList = [];
-        let gyakorloQueue = []; // Keverített sor ismétlés nélkül
+        let gameQueue = [];         // Keverített sor (mindkét módban)
+        let lastItem = null;        // Előző tétel (tanuló módban ismétlés elkerülés)
         let currentItem = null;
-        let currentMode = 'tanulo'; // 'tanulo' vagy 'gyakorlo'
+        let currentMode = 'tanulo';
         let inputText = "";
         let streak = 0;
         let isWaiting = false;
         let pluVisible = true;
         let successCount = 0;
         let totalCount = 0;
-        let hintShown = false; // Puska mutatva van-e
+        let hintShown = false;
+
+        // Statisztika (csak gyakorló módhoz)
+        let errorCount = 0;
+        let hintCount = 0;
+        let timerInterval = null;
+        let startTime = null;
+        let elapsedSeconds = 0;
+
+        // --- SEGÉDFÜGGVÉNYEK ---
+        function shuffleArray(arr) {
+            const a = [...arr];
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        function formatTime(sec) {
+            const m = Math.floor(sec / 60);
+            const s = sec % 60;
+            return `${m}:${s.toString().padStart(2, '0')}`;
+        }
+
+        function hideAllScreens() {
+            document.getElementById('menu-screen').style.display = 'none';
+            document.getElementById('mode-screen').style.display = 'none';
+            document.getElementById('app-screen').style.display = 'none';
+            document.getElementById('end-screen').style.display = 'none';
+        }
 
         // --- NAVIGÁCIÓ ---
         function initMenu() {
@@ -371,84 +456,154 @@
         }
 
         function showMenu() {
-            document.getElementById('mode-screen').style.display = 'none';
-            document.getElementById('app-screen').style.display = 'none';
+            stopTimer();
+            hideAllScreens();
             document.getElementById('menu-screen').style.display = 'block';
         }
 
+        let selectedCategoryIndex = 0;
         let selectedFilterFn = null;
+
         function selectCategory(index) {
+            selectedCategoryIndex = index;
             selectedFilterFn = KATEGORIAK[index].filter;
             const count = adatbazis.filter(selectedFilterFn).length;
             document.getElementById('mode-subtitle').innerText = `${KATEGORIAK[index].name} kategória (${count} termék)`;
-            
-            document.getElementById('menu-screen').style.display = 'none';
-            document.getElementById('app-screen').style.display = 'none';
+            hideAllScreens();
             document.getElementById('mode-screen').style.display = 'block';
         }
 
         function showModeScreen() {
-            document.getElementById('app-screen').style.display = 'none';
+            stopTimer();
+            hideAllScreens();
             document.getElementById('mode-screen').style.display = 'block';
         }
 
-        // --- JÁTÉK LOGIKA ---
-        function shuffleArray(arr) {
-            const a = [...arr];
-            for (let i = a.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [a[i], a[j]] = [a[j], a[i]];
-            }
-            return a;
+        // --- IDŐZÍTŐ ---
+        function startTimer() {
+            startTime = Date.now();
+            elapsedSeconds = 0;
+            document.getElementById('timer-display').innerText = '⏱ 0:00';
+            timerInterval = setInterval(() => {
+                elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+                document.getElementById('timer-display').innerText = '⏱ ' + formatTime(elapsedSeconds);
+            }, 1000);
         }
 
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }
+
+        // --- VÉGE KÉPERNYŐ ---
+        function showEndScreen() {
+            stopTimer();
+            hideAllScreens();
+
+            const screen = document.getElementById('end-screen');
+            screen.style.display = 'block';
+
+            if (currentMode === 'gyakorlo') {
+                // Statisztikás vége
+                document.getElementById('end-emoji').innerText = errorCount === 0 ? '🏆' : (errorCount <= 5 ? '🎉' : '💪');
+                document.getElementById('end-title').innerText = errorCount === 0 ? 'Hibátlan! Szuperál!' : 'Gratulálok!';
+                document.getElementById('end-subtitle').innerText = 'Sikerült az összes terméket teljesíteni!';
+
+                const grid = document.getElementById('stat-grid');
+                grid.style.display = 'grid';
+                grid.innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-icon">⏱</div>
+                        <div class="stat-value">${formatTime(elapsedSeconds)}</div>
+                        <div class="stat-label">Eltelt idő</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">❌</div>
+                        <div class="stat-value" style="color:${errorCount === 0 ? 'var(--streak-ok)' : 'var(--streak-err)'}">${errorCount}</div>
+                        <div class="stat-label">Elrontott válasz</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🚨</div>
+                        <div class="stat-value" style="color:${hintCount === 0 ? 'var(--streak-ok)' : '#ffcc00'}">${hintCount}</div>
+                        <div class="stat-label">Felhasznált puska</div>
+                    </div>
+                `;
+            } else {
+                // Tanuló mód egyszerű vége
+                document.getElementById('end-emoji').innerText = '🎉';
+                document.getElementById('end-title').innerText = 'Gratulálok!';
+                document.getElementById('end-subtitle').innerText = 'Sikerült az összes terméket megtanulni!';
+                document.getElementById('stat-grid').style.display = 'none';
+            }
+        }
+
+        function restartGame() {
+            startGame(currentMode);
+        }
+
+        // --- JÁTÉK LOGIKA ---
         function startGame(mode) {
             currentMode = mode;
             activeList = adatbazis.filter(selectedFilterFn);
-            if(activeList.length === 0) return;
-            
+            if (activeList.length === 0) return;
+
             successCount = 0;
             totalCount = activeList.length;
-            
-            if (currentMode === 'gyakorlo') {
-                gyakorloQueue = shuffleArray(activeList);
-            }
-            
-            document.getElementById('mode-screen').style.display = 'none';
+            errorCount = 0;
+            hintCount = 0;
+            lastItem = null;
+
+            // Mindkét módban shuffelt sor
+            gameQueue = shuffleArray(activeList);
+
+            hideAllScreens();
             document.getElementById('app-screen').style.display = 'flex';
-            
-            // UI igazítása a módhoz
-            if(currentMode === 'gyakorlo') {
-                document.getElementById('streak-2').style.visibility = 'hidden';
-                document.getElementById('streak-3').style.visibility = 'hidden';
-                document.getElementById('hint-btn').disabled = false;
-                document.getElementById('hint-btn').style.opacity = '1';
+
+            // UI igazítása módhoz
+            const isGyakorlo = currentMode === 'gyakorlo';
+            document.getElementById('streak-2').style.visibility = isGyakorlo ? 'hidden' : 'visible';
+            document.getElementById('streak-3').style.visibility = isGyakorlo ? 'hidden' : 'visible';
+            document.getElementById('hint-btn').disabled = !isGyakorlo;
+            document.getElementById('hint-btn').style.opacity = isGyakorlo ? '1' : '0.4';
+
+            // Időzítő csak gyakorló módban
+            const timerEl = document.getElementById('timer-display');
+            if (isGyakorlo) {
+                timerEl.style.display = 'block';
+                startTimer();
             } else {
-                document.getElementById('streak-2').style.visibility = 'visible';
-                document.getElementById('streak-3').style.visibility = 'visible';
-                document.getElementById('hint-btn').disabled = true;
-                document.getElementById('hint-btn').style.opacity = '0.4';
+                timerEl.style.display = 'none';
+                stopTimer();
             }
-            
+
             nextProduct();
         }
 
         function nextProduct() {
-            if (currentMode === 'gyakorlo') {
-                if (gyakorloQueue.length === 0) {
-                    // Kör vége, újrakeverés
-                    gyakorloQueue = shuffleArray(activeList);
-                    successCount = 0;
-                    totalCount = activeList.length;
-                }
-                currentItem = gyakorloQueue.shift();
-            } else {
-                currentItem = activeList[Math.floor(Math.random() * activeList.length)];
+            // Ha a sor üres: tanuló módban vége, gyakorló módban ez nem fordulhat elő (vége előbb jön)
+            if (gameQueue.length === 0) {
+                showEndScreen();
+                return;
             }
-            
+
+            // Tanuló módban: ne jöjjön egymás után ugyanaz a tétel
+            // Ha csak 1 elem maradt, nem tudunk mást tenni
+            if (currentMode === 'tanulo' && lastItem && gameQueue.length > 1) {
+                if (gameQueue[0].code === lastItem.code) {
+                    // Csere az első és egy véletlen másik elem között
+                    const swapIdx = 1 + Math.floor(Math.random() * (gameQueue.length - 1));
+                    [gameQueue[0], gameQueue[swapIdx]] = [gameQueue[swapIdx], gameQueue[0]];
+                }
+            }
+
+            currentItem = gameQueue.shift();
+            lastItem = currentItem;
+
             document.getElementById('counter-display').innerText = `${successCount} / ${totalCount}`;
             document.getElementById('product-name').innerText = currentItem.name;
-            
+
             if (currentItem.unit === "mérős") {
                 document.getElementById('unit-icon').innerText = "⚖";
                 document.getElementById('unit-text').innerText = "Mérős";
@@ -466,14 +621,14 @@
             pluVisible = (currentMode === 'tanulo');
             isWaiting = false;
             hintShown = false;
-            
+
             document.getElementById('input-display').innerText = inputText;
-            
+
             const hintBar = document.getElementById('plu-hint');
             hintBar.style.backgroundColor = "var(--plu-bar)";
             hintBar.style.color = "white";
             hintBar.innerText = currentMode === 'tanulo' ? currentItem.code : "";
-            
+
             document.getElementById('streak-1').style.backgroundColor = "var(--streak-bg)";
             document.getElementById('streak-2').style.backgroundColor = "var(--streak-bg)";
             document.getElementById('streak-3').style.backgroundColor = "var(--streak-bg)";
@@ -482,22 +637,20 @@
         // --- GOMB LOGIKA ---
         function pressNum(val) {
             if (isWaiting) return;
-            
+
             if (val === "00") {
                 if (inputText.length <= 2) inputText += val;
             } else {
                 if (inputText.length < 4) inputText += val;
             }
-            
+
             document.getElementById('input-display').innerText = inputText;
-            
-            // Tanuló módban eltűnik a puska beíráskor
+
             if (pluVisible && currentMode === 'tanulo') {
                 document.getElementById('plu-hint').innerText = "";
                 pluVisible = false;
             }
-            
-            // Ha puska volt mutatva (piros gombbal), töröljük
+
             if (hintShown) {
                 document.getElementById('plu-hint').innerText = "";
                 hintShown = false;
@@ -516,25 +669,31 @@
 
         function pressPlu() {
             if (isWaiting || inputText === "") return;
-            
+
             const numVal = parseInt(inputText, 10);
             const hintBar = document.getElementById('plu-hint');
-            
+
             if (numVal === currentItem.code) {
                 // --- HELYES ---
                 streak++;
-                document.getElementById('streak-'+streak).style.backgroundColor = "var(--streak-ok)";
-                
-                // Gyakorló módban 1 találat elég, Tanulóban 3 kell
-                if ((currentMode === 'gyakorlo' && streak === 1) || (currentMode === 'tanulo' && streak === 3)) {
+                document.getElementById('streak-' + streak).style.backgroundColor = "var(--streak-ok)";
+
+                const roundDone = (currentMode === 'gyakorlo' && streak === 1) || (currentMode === 'tanulo' && streak === 3);
+
+                if (roundDone) {
                     successCount++;
                     document.getElementById('counter-display').innerText = `${successCount} / ${totalCount}`;
-                    
+
                     isWaiting = true;
                     hintBar.innerText = currentItem.code;
                     hintBar.style.color = "var(--streak-ok)";
-                    
-                    setTimeout(nextProduct, 1000);
+
+                    // Vége van-e?
+                    if (gameQueue.length === 0) {
+                        setTimeout(showEndScreen, 900);
+                    } else {
+                        setTimeout(nextProduct, 1000);
+                    }
                 } else {
                     inputText = "";
                     document.getElementById('input-display').innerText = inputText;
@@ -542,35 +701,36 @@
             } else {
                 // --- HELYTELEN ---
                 isWaiting = true;
+                if (currentMode === 'gyakorlo') errorCount++;
+
                 const errorBox = (currentMode === 'gyakorlo') ? 1 : streak + 1;
-                
-                if(errorBox <= 3) {
-                    document.getElementById('streak-'+errorBox).style.backgroundColor = "var(--streak-err)";
+                if (errorBox <= 3) {
+                    document.getElementById('streak-' + errorBox).style.backgroundColor = "var(--streak-err)";
                 }
-                
-                // Piros villanás a nagy puskasávon
+
                 if (currentMode === 'gyakorlo') {
                     hintBar.style.backgroundColor = "var(--streak-err)";
                 }
-                
+
                 setTimeout(() => {
                     resetInputState();
-                }, 1000); // 1 másodperc hiba bünti
+                }, 1000);
             }
         }
 
         function pressHint() {
             if (isWaiting || currentMode !== 'gyakorlo') return;
+            hintCount++;
             const hintBar = document.getElementById('plu-hint');
             hintBar.innerText = currentItem.code;
             hintBar.style.color = "#ffcc00";
             hintShown = true;
         }
 
-        // --- FIZIKAI BILLENTYŰZET TÁMOGATÁS ---
+        // --- FIZIKAI BILLENTYŰZET ---
         document.addEventListener('keydown', (e) => {
             if (document.getElementById('app-screen').style.display === 'none') return;
-            
+
             if (e.key >= '0' && e.key <= '9') {
                 pressNum(e.key);
             } else if (e.key === 'Enter') {
