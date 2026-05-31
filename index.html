@@ -6,7 +6,6 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Lidl PLU Gyakorló</title>
-    
     <style>
         :root {
             --bg: #1e1e2e;
@@ -25,9 +24,7 @@
             --streak-ok: #4caf50;
             --streak-err: #f44336;
         }
-
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; font-family: 'Helvetica', Arial, sans-serif; }
-
         body {
             background-color: var(--bg);
             color: var(--text);
@@ -40,40 +37,72 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- FŐMENÜ ÉS MÓDVÁLASZTÓ --- */
+        /* ── MENÜK ── */
         #menu-screen, #mode-screen, #end-screen {
             text-align: center;
             width: 100%;
-            max-width: 600px;
-            padding: 20px;
+            max-width: 680px;
+            padding: 24px 20px;
+            overflow-y: auto;
+            max-height: 100dvh;
         }
         #mode-screen, #end-screen { display: none; }
 
-        h1 { font-size: clamp(2rem, 5vw, 2.5rem); margin-bottom: 10px; }
-        p { color: var(--subtext); font-size: 1.2rem; margin-bottom: 40px; }
+        h1 { font-size: clamp(1.6rem, 4vw, 2.2rem); margin-bottom: 6px; }
+        .menu-sub { color: var(--subtext); font-size: 1rem; margin-bottom: 28px; }
 
-        .cat-btn {
+        /* Csoport fejlécek a főmenüben */
+        .group-label {
+            text-align: left;
+            font-size: 0.75rem;
+            font-weight: bold;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--subtext);
+            margin: 20px 0 10px 4px;
+        }
+        /* Kártya sor */
+        .cat-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 4px;
+        }
+        .cat-card {
+            flex: 1;
             background-color: var(--panel);
             color: var(--text);
             border: none;
-            width: 100%;
-            padding: 20px;
-            font-size: 1.3rem;
+            padding: 18px 10px;
+            font-size: 1rem;
             font-weight: bold;
-            border-radius: 12px;
-            margin-bottom: 15px;
+            border-radius: 14px;
             cursor: pointer;
-            transition: 0.2s;
+            transition: 0.15s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            border: 2px solid transparent;
         }
-        .cat-btn:active { background-color: var(--surface); transform: scale(0.98); }
+        .cat-card:active { transform: scale(0.96); background-color: var(--surface); }
+        .cat-card .cat-icon { font-size: 2rem; }
+        .cat-card .cat-name { font-size: 0.9rem; line-height: 1.2; }
+        .cat-card .cat-count { font-size: 0.75rem; color: var(--subtext); font-weight: normal; }
+        /* Kategória színek */
+        .cat-card.gyumolcs { border-color: #a6e3a1; }
+        .cat-card.zoldseg  { border-color: #94e2d5; }
+        .cat-card.boff-edes { border-color: #fab387; }
+        .cat-card.boff-sos  { border-color: #f9e2af; }
+        .cat-card.osszes   { border-color: #89b4fa; }
 
+        /* Módválasztó */
         .mode-btn {
             background-color: transparent;
             color: var(--text);
             border: 2px solid var(--panel);
             width: 48%;
-            padding: 30px 10px;
-            font-size: 1.4rem;
+            padding: 26px 10px;
+            font-size: 1.3rem;
             font-weight: bold;
             border-radius: 12px;
             cursor: pointer;
@@ -84,55 +113,27 @@
         .mode-btn:active { transform: scale(0.95); }
         #btn-tanulo { border-color: #cba6f7; color: #cba6f7; }
         #btn-gyakorlo { border-color: #89b4fa; color: #89b4fa; }
-
         .back-text-btn {
             background: none; border: none; color: var(--subtext);
-            font-size: 1.2rem; margin-top: 30px; cursor: pointer; text-decoration: underline;
+            font-size: 1.1rem; margin-top: 24px; cursor: pointer; text-decoration: underline;
+            display: block;
         }
 
-        /* --- VÉGE KÉPERNYŐ --- */
-        #end-screen {
-            display: none;
-        }
+        /* ── VÉGE KÉPERNYŐ ── */
         .end-emoji { font-size: 5rem; margin-bottom: 10px; }
-        .end-title { font-size: clamp(1.8rem, 5vw, 2.5rem); font-weight: bold; margin-bottom: 8px; color: var(--text); }
-        .end-subtitle { color: var(--subtext); font-size: 1.1rem; margin-bottom: 30px; }
-
-        .stat-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 30px;
-        }
-        .stat-card {
-            background: var(--panel);
-            border-radius: 12px;
-            padding: 16px 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-        }
-        .stat-icon { font-size: 1.8rem; }
-        .stat-value { font-size: 1.5rem; font-weight: bold; color: var(--text); }
-        .stat-label { font-size: 0.8rem; color: var(--subtext); text-align: center; }
-
-        .end-btn {
-            width: 100%;
-            padding: 18px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            margin-bottom: 12px;
-            transition: 0.2s;
-        }
+        .end-title { font-size: clamp(1.6rem, 5vw, 2.2rem); font-weight: bold; margin-bottom: 8px; }
+        .end-subtitle { color: var(--subtext); font-size: 1rem; margin-bottom: 28px; }
+        .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
+        .stat-card { background: var(--panel); border-radius: 12px; padding: 16px 8px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+        .stat-icon { font-size: 1.6rem; }
+        .stat-value { font-size: 1.4rem; font-weight: bold; }
+        .stat-label { font-size: 0.75rem; color: var(--subtext); text-align: center; }
+        .end-btn { width: 100%; padding: 16px; font-size: 1.1rem; font-weight: bold; border: none; border-radius: 12px; cursor: pointer; margin-bottom: 12px; transition: 0.2s; }
         .end-btn:active { transform: scale(0.98); }
         .end-btn-primary { background: #89b4fa; color: #1e1e2e; }
         .end-btn-secondary { background: var(--panel); color: var(--text); }
 
-        /* --- KASSZA MONITOR --- */
+        /* ── KASSZA APP ── */
         #app-screen {
             display: none;
             width: 100%;
@@ -142,48 +143,32 @@
             flex-direction: column;
             box-shadow: 0 10px 40px rgba(0,0,0,0.5);
         }
-
-        /* FELSŐ SÁV */
         .top-bar {
             background-color: var(--top-bar);
-            height: 6dvh;
-            min-height: 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-            color: white;
+            height: 6dvh; min-height: 40px;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 20px; color: white;
         }
         .top-bar-left { display: flex; align-items: center; gap: 16px; }
         .top-bar .counter { font-size: clamp(1rem, 2.5dvh, 1.4rem); font-weight: bold; }
-        .top-bar .timer { font-size: clamp(0.85rem, 2dvh, 1.1rem); color: #aaa; font-variant-numeric: tabular-nums; }
-        .top-bar .back-btn {
-            background: none; border: none; color: white;
-            font-size: clamp(1rem, 2dvh, 1.1rem); font-weight: bold; cursor: pointer;
-        }
-
-        /* FŐ TARTALOM */
+        .top-bar .timer { font-size: clamp(0.8rem, 2dvh, 1rem); color: #aaa; font-variant-numeric: tabular-nums; }
+        .top-bar .cat-tag { font-size: clamp(0.7rem, 1.8dvh, 0.95rem); color: #888; margin-left: 4px; }
+        .top-bar .back-btn { background: none; border: none; color: white; font-size: clamp(1rem, 2dvh, 1.1rem); font-weight: bold; cursor: pointer; }
         .main-container { display: flex; flex: 1; overflow: hidden; }
-
-        /* BAL PANEL */
         .left-pane { flex: 1.3; display: flex; flex-direction: column; position: relative; }
-
         .unit-badge {
             position: absolute; top: 2vmin; left: 2vmin;
             background: white; border: 2px solid #ccc; border-radius: 8px;
             width: clamp(60px, 10vmin, 90px); height: clamp(60px, 10vmin, 90px);
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            color: #333;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; color: #333;
         }
         .unit-badge .icon { font-size: clamp(1.5rem, 4vmin, 2.5rem); font-weight: bold; margin-bottom: -5px; }
-        .unit-badge .text { font-size: clamp(0.7rem, 1.5vmin, 1rem); color: #666; }
-
+        .unit-badge .text { font-size: clamp(0.6rem, 1.5vmin, 0.9rem); color: #666; }
         .product-name {
             flex: 1; display: flex; justify-content: center; align-items: center;
-            font-size: clamp(2rem, 7dvh, 5rem); font-weight: bold; color: #333;
+            font-size: clamp(1.6rem, 6dvh, 4.5rem); font-weight: bold; color: #333;
             text-align: center; padding: 2vmin 4vmin;
         }
-
         .plu-bar {
             background-color: var(--plu-bar);
             height: 16dvh; min-height: 80px;
@@ -191,48 +176,31 @@
             font-size: clamp(3rem, 10dvh, 6rem); font-weight: bold; color: white;
             transition: background-color 0.2s;
         }
-
-        /* JOBB PANEL */
-        .right-pane {
-            flex: 1; background-color: var(--bg-right); display: flex;
-            flex-direction: column; padding: 2vmin; border-left: 2px solid #ddd;
-        }
-
+        .right-pane { flex: 1; background-color: var(--bg-right); display: flex; flex-direction: column; padding: 2vmin; border-left: 2px solid #ddd; }
         .input-row { display: flex; align-items: center; margin-bottom: 2vmin; }
-
         .input-display {
             flex: 1; background: white; border-radius: 8px;
             height: 10dvh; min-height: 50px; display: flex; align-items: center; justify-content: flex-end;
             padding: 0 15px; font-size: clamp(2rem, 5dvh, 3.5rem); font-weight: bold; color: #333;
             margin-right: 1.5vmin; border: 2px solid #ddd;
         }
-
         .streak-container { display: flex; flex-direction: column; gap: 0.5vmin; margin-right: 1.5vmin; }
         .streak-dot {
             width: clamp(20px, 4vmin, 30px); height: clamp(15px, 2.5dvh, 25px);
             background-color: var(--streak-bg); border-radius: 4px; display: flex; justify-content: center; align-items: center;
             color: white; font-size: 0.8rem; font-weight: bold;
         }
-
         .c-btn {
             width: 10dvh; min-width: 50px; height: 10dvh; min-height: 50px;
-            background: white; border: 2px solid #ddd; border-radius: 8px; font-size: clamp(1.5rem, 4dvh, 2.5rem); font-weight: bold; color: #333;
+            background: white; border: 2px solid #ddd; border-radius: 8px;
+            font-size: clamp(1.5rem, 4dvh, 2.5rem); font-weight: bold; color: #333;
             cursor: pointer; display: flex; justify-content: center; align-items: center;
         }
         .c-btn:active { background: #e0e0e0; }
-
-        /* NUMPAD */
-        .numpad {
-            display: grid; grid-template-columns: repeat(4, 1fr);
-            grid-auto-rows: 1fr; gap: 1.5vmin; flex: 1;
-        }
-        .btn {
-            border: none; border-radius: 8px; font-weight: bold; display: flex; justify-content: center; align-items: center;
-            font-size: clamp(1.2rem, 4dvh, 2.5rem); cursor: pointer; color: #333; transition: filter 0.1s;
-        }
+        .numpad { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 1fr; gap: 1.5vmin; flex: 1; }
+        .btn { border: none; border-radius: 8px; font-weight: bold; display: flex; justify-content: center; align-items: center; font-size: clamp(1.2rem, 4dvh, 2.5rem); cursor: pointer; color: #333; transition: filter 0.1s; }
         .btn:active { filter: brightness(0.85); }
         .btn:disabled { cursor: not-allowed; opacity: 0.8; filter: none; }
-
         .btn-num { background-color: var(--btn-num); }
         .btn-plu { background-color: var(--btn-plu); grid-row: span 2; }
         .btn-white { background-color: white; color: #aaa; font-size: clamp(0.7rem, 2dvh, 1.2rem); text-align: center; }
@@ -241,507 +209,652 @@
 </head>
 <body>
 
-    <div id="menu-screen">
-        <h1>Lidl PLU Gyakorló</h1>
-        <p>Válaszd ki a kategóriát!</p>
-        <div id="categories"></div>
-    </div>
+<!-- FŐMENÜ -->
+<div id="menu-screen">
+    <h1>🛒 PLU Gyakorló</h1>
+    <p class="menu-sub">Válaszd ki a kategóriát!</p>
+    <div id="categories"></div>
+</div>
 
-    <div id="mode-screen">
-        <h1>Mód választása</h1>
-        <p id="mode-subtitle">X termék kiválasztva</p>
-        <div>
-            <button class="mode-btn" id="btn-tanulo" onclick="startGame('tanulo')">📖 Tanuló mód<br><span style="font-size:0.9rem; font-weight:normal;">3 helyes válasz kell</span></button>
-            <button class="mode-btn" id="btn-gyakorlo" onclick="startGame('gyakorlo')">🎯 Gyakorló mód<br><span style="font-size:0.9rem; font-weight:normal;">1 helyes válasz, nincs puska</span></button>
+<!-- MÓDVÁLASZTÓ -->
+<div id="mode-screen">
+    <h1>Mód választása</h1>
+    <p class="menu-sub" id="mode-subtitle" style="margin-bottom:28px;"></p>
+    <div>
+        <button class="mode-btn" id="btn-tanulo" onclick="startGame('tanulo')">📖 Tanuló mód<br><span style="font-size:0.85rem; font-weight:normal;">3 helyes válasz kell</span></button>
+        <button class="mode-btn" id="btn-gyakorlo" onclick="startGame('gyakorlo')">🎯 Gyakorló mód<br><span style="font-size:0.85rem; font-weight:normal;">1 helyes válasz, nincs puska</span></button>
+    </div>
+    <button class="back-text-btn" onclick="showMenu()">← Vissza a kategóriákhoz</button>
+</div>
+
+<!-- VÉGE KÉPERNYŐ -->
+<div id="end-screen">
+    <div class="end-emoji" id="end-emoji">🎉</div>
+    <div class="end-title" id="end-title">Gratulálok!</div>
+    <div class="end-subtitle" id="end-subtitle"></div>
+    <div class="stat-grid" id="stat-grid"></div>
+    <button class="end-btn end-btn-primary" onclick="restartGame()">🔄 Újra</button>
+    <button class="end-btn end-btn-secondary" onclick="showMenu()">🏠 Főoldal</button>
+</div>
+
+<!-- KASSZA APP -->
+<div id="app-screen">
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <div class="counter" id="counter-display">0 / 0</div>
+            <div class="timer" id="timer-display" style="display:none;">⏱ 0:00</div>
+            <div class="cat-tag" id="cat-tag-display"></div>
         </div>
-        <button class="back-text-btn" onclick="showMenu()">← Vissza a kategóriákhoz</button>
+        <button class="back-btn" onclick="showModeScreen()">← Vissza</button>
     </div>
-
-    <div id="end-screen">
-        <div class="end-emoji" id="end-emoji">🎉</div>
-        <div class="end-title" id="end-title">Gratulálok!</div>
-        <div class="end-subtitle" id="end-subtitle">Sikerült az összes terméket!</div>
-        <div class="stat-grid" id="stat-grid"></div>
-        <button class="end-btn end-btn-primary" onclick="restartGame()">🔄 Újra</button>
-        <button class="end-btn end-btn-secondary" onclick="showMenu()">🏠 Főoldal</button>
-    </div>
-
-    <div id="app-screen">
-        <div class="top-bar">
-            <div class="top-bar-left">
-                <div class="counter" id="counter-display">0 / 0</div>
-                <div class="timer" id="timer-display" style="display:none;">⏱ 0:00</div>
+    <div class="main-container">
+        <div class="left-pane">
+            <div class="unit-badge">
+                <div class="icon" id="unit-icon">1</div>
+                <div class="text" id="unit-text">Darab</div>
             </div>
-            <button class="back-btn" onclick="showModeScreen()">← Vissza</button>
+            <div class="product-name" id="product-name">Termék Neve</div>
+            <div class="plu-bar" id="plu-hint"></div>
         </div>
-
-        <div class="main-container">
-            <div class="left-pane">
-                <div class="unit-badge">
-                    <div class="icon" id="unit-icon">1</div>
-                    <div class="text" id="unit-text">Darab</div>
+        <div class="right-pane">
+            <div class="input-row">
+                <div class="input-display" id="input-display"></div>
+                <div class="streak-container">
+                    <div class="streak-dot" id="streak-1">1</div>
+                    <div class="streak-dot" id="streak-2">2</div>
+                    <div class="streak-dot" id="streak-3">3</div>
                 </div>
-                <div class="product-name" id="product-name">Termék Neve</div>
-                <div class="plu-bar" id="plu-hint">1234</div>
+                <button class="c-btn" onclick="pressC()">C</button>
             </div>
-
-            <div class="right-pane">
-                <div class="input-row">
-                    <div class="input-display" id="input-display"></div>
-                    <div class="streak-container">
-                        <div class="streak-dot" id="streak-1">1</div>
-                        <div class="streak-dot" id="streak-2">2</div>
-                        <div class="streak-dot" id="streak-3">3</div>
-                    </div>
-                    <button class="c-btn" onclick="pressC()">C</button>
-                </div>
-
-                <div class="numpad">
-                    <button class="btn btn-white" disabled>Sztornó</button>
-                    <button class="btn btn-white" disabled>Nyugta<br>törlése</button>
-                    <button class="btn btn-white" disabled>Göngyö-<br>leg</button>
-                    <button class="btn" style="background:#add8e6; color:#555; font-size:clamp(0.7rem, 2dvh, 1.2rem);" disabled>Mennyi-<br>ség</button>
-
-                    <button class="btn btn-num" onclick="pressNum('7')">7</button>
-                    <button class="btn btn-num" onclick="pressNum('8')">8</button>
-                    <button class="btn btn-num" onclick="pressNum('9')">9</button>
-                    <button class="btn btn-plu" onclick="pressPlu()">PLU</button>
-
-                    <button class="btn btn-num" onclick="pressNum('4')">4</button>
-                    <button class="btn btn-num" onclick="pressNum('5')">5</button>
-                    <button class="btn btn-num" onclick="pressNum('6')">6</button>
-
-                    <button class="btn btn-num" onclick="pressNum('1')">1</button>
-                    <button class="btn btn-num" onclick="pressNum('2')">2</button>
-                    <button class="btn btn-num" onclick="pressNum('3')">3</button>
-                    <button class="btn btn-ean" disabled>EAN</button>
-
-                    <button class="btn btn-num" onclick="pressNum('0')">0</button>
-                    <button class="btn btn-num" onclick="pressNum('00')">00</button>
-                    <button class="btn btn-num" disabled>,</button>
-                    <button class="btn btn-white" id="hint-btn" style="color:var(--streak-err); font-size:clamp(1.2rem, 3.5dvh, 2rem);" onclick="pressHint()">🚨</button>
-                </div>
+            <div class="numpad">
+                <button class="btn btn-white" disabled>Sztornó</button>
+                <button class="btn btn-white" disabled>Nyugta<br>törlése</button>
+                <button class="btn btn-white" disabled>Göngyö-<br>leg</button>
+                <button class="btn" style="background:#add8e6;color:#555;font-size:clamp(0.7rem,2dvh,1.2rem);" disabled>Mennyi-<br>ség</button>
+                <button class="btn btn-num" onclick="pressNum('7')">7</button>
+                <button class="btn btn-num" onclick="pressNum('8')">8</button>
+                <button class="btn btn-num" onclick="pressNum('9')">9</button>
+                <button class="btn btn-plu" onclick="pressPlu()">PLU</button>
+                <button class="btn btn-num" onclick="pressNum('4')">4</button>
+                <button class="btn btn-num" onclick="pressNum('5')">5</button>
+                <button class="btn btn-num" onclick="pressNum('6')">6</button>
+                <button class="btn btn-num" onclick="pressNum('1')">1</button>
+                <button class="btn btn-num" onclick="pressNum('2')">2</button>
+                <button class="btn btn-num" onclick="pressNum('3')">3</button>
+                <button class="btn btn-ean" disabled>EAN</button>
+                <button class="btn btn-num" onclick="pressNum('0')">0</button>
+                <button class="btn btn-num" onclick="pressNum('00')">00</button>
+                <button class="btn btn-num" disabled>,</button>
+                <button class="btn btn-white" id="hint-btn" style="color:var(--streak-err);font-size:clamp(1.2rem,3.5dvh,2rem);" onclick="pressHint()">🚨</button>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        // --- ADATBÁZIS ---
-        const adatbazis = [
-            { code: 1, name: "Banán", cat: "Gyümölcs", unit: "mérős" },
-            { code: 4, name: "Bandázsolt banán", cat: "Gyümölcs", unit: "mérős" },
-            { code: 5, name: "Citrom", cat: "Gyümölcs", unit: "mérős" },
-            { code: 6, name: "Lime citrom", cat: "Gyümölcs", unit: "db" },
-            { code: 7, name: "Nagyméretű citrom", cat: "Gyümölcs", unit: "mérős" },
-            { code: 10, name: "Piros grapefruit", cat: "Gyümölcs", unit: "mérős" },
-            { code: 12, name: "Mandarin", cat: "Gyümölcs", unit: "mérős" },
-            { code: 20, name: "Narancs", cat: "Gyümölcs", unit: "mérős" },
-            { code: 21, name: "Nagyméretű narancs", cat: "Gyümölcs", unit: "mérős" },
-            { code: 30, name: "Pomelo", cat: "Gyümölcs", unit: "db" },
-            { code: 31, name: "Piros pomelo", cat: "Gyümölcs", unit: "db" },
-            { code: 33, name: "Ananász", cat: "Gyümölcs", unit: "db" },
-            { code: 34, name: "Avokádó", cat: "Gyümölcs", unit: "db" },
-            { code: 35, name: "Friss füge", cat: "Gyümölcs", unit: "db" },
-            { code: 37, name: "Datolyaszilva", cat: "Gyümölcs", unit: "db" },
-            { code: 40, name: "Kivi", cat: "Gyümölcs", unit: "db" },
-            { code: 41, name: "Kiwi Gold", cat: "Gyümölcs", unit: "db" },
-            { code: 42, name: "Kókuszdió", cat: "Gyümölcs", unit: "db" },
-            { code: 45, name: "Licsi", cat: "Gyümölcs", unit: "mérős" },
-            { code: 46, name: "Mangó", cat: "Gyümölcs", unit: "db" },
-            { code: 49, name: "Papaja", cat: "Gyümölcs", unit: "db" },
-            { code: 52, name: "Fairtrade Maracuja", cat: "Gyümölcs", unit: "db" },
-            { code: 54, name: "Gyömbér", cat: "Gyümölcs", unit: "mérős" },
-            { code: 61, name: "Cseresznye", cat: "Gyümölcs", unit: "mérős" },
-            { code: 62, name: "Meggy", cat: "Gyümölcs", unit: "mérős" },
-            { code: 70, name: "Sárga szilva", cat: "Gyümölcs", unit: "mérős" },
-            { code: 71, name: "Hazai kék szilva", cat: "Gyümölcs", unit: "mérős" },
-            { code: 72, name: "Japán szilva", cat: "Gyümölcs", unit: "mérős" },
-            { code: 80, name: "Fehérszőlő", cat: "Gyümölcs", unit: "mérős" },
-            { code: 81, name: "Magnélküli fehérszőlő", cat: "Gyümölcs", unit: "mérős" },
-            { code: 82, name: "Pirosszőlő", cat: "Gyümölcs", unit: "mérős" },
-            { code: 84, name: "Kékszőlő", cat: "Gyümölcs", unit: "mérős" },
-            { code: 90, name: "Őszibarack", cat: "Gyümölcs", unit: "mérős" },
-            { code: 93, name: "Nektarin", cat: "Gyümölcs", unit: "mérős" },
-            { code: 96, name: "Sárgabarack", cat: "Gyümölcs", unit: "mérős" },
-            { code: 101, name: "Piros alma Ambrosia", cat: "Gyümölcs", unit: "mérős" },
-            { code: 103, name: "Piros alma Braeburn", cat: "Gyümölcs", unit: "mérős" },
-            { code: 106, name: "Evelina alma", cat: "Gyümölcs", unit: "mérős" },
-            { code: 107, name: "Piros alma Fuji", cat: "Gyümölcs", unit: "mérős" },
-            { code: 108, name: "Piros alma Gala", cat: "Gyümölcs", unit: "mérős" },
-            { code: 110, name: "Piros alma Idared", cat: "Gyümölcs", unit: "mérős" },
-            { code: 111, name: "Piros alma Jonagold", cat: "Gyümölcs", unit: "mérős" },
-            { code: 113, name: "Piros alma Pinova", cat: "Gyümölcs", unit: "mérős" },
-            { code: 114, name: "Piros alma Red Chief", cat: "Gyümölcs", unit: "mérős" },
-            { code: 118, name: "Pirosalma ömlesztett", cat: "Gyümölcs", unit: "mérős" },
-            { code: 122, name: "Gránátalma", cat: "Gyümölcs", unit: "db" },
-            { code: 130, name: "Zöldalma golden", cat: "Gyümölcs", unit: "mérős" },
-            { code: 132, name: "Zöld alma Granny Smith", cat: "Gyümölcs", unit: "mérős" },
-            { code: 133, name: "Zöldalma ömlesztett", cat: "Gyümölcs", unit: "mérős" },
-            { code: 142, name: "Körte Conference", cat: "Gyümölcs", unit: "mérős" },
-            { code: 148, name: "Nashi körte", cat: "Gyümölcs", unit: "db" },
-            { code: 153, name: "Körte Piros", cat: "Gyümölcs", unit: "mérős" },
-            { code: 161, name: "Cantaloupedinnye", cat: "Gyümölcs", unit: "db" },
-            { code: 167, name: "Gáliadinnye", cat: "Gyümölcs", unit: "mérős" },
-            { code: 173, name: "Görögdinnye", cat: "Gyümölcs", unit: "mérős" },
-            { code: 174, name: "Magszegény görögdinnye", cat: "Gyümölcs", unit: "mérős" },
-            { code: 176, name: "Mini görögdinnye", cat: "Gyümölcs", unit: "mérős" },
-            { code: 180, name: "Bio Banán", cat: "Gyümölcs", unit: "mérős" },
-            { code: 184, name: "Bio mangó", cat: "Gyümölcs", unit: "db" },
-            { code: 3507, name: "Cosmic Crips alma", cat: "Gyümölcs", unit: "mérős" },
-            { code: 4130, name: "Pirosalma Pink Lady", cat: "Gyümölcs", unit: "mérős" },
-            { code: 4196, name: "Pirosalma Crimson snow", cat: "Gyümölcs", unit: "mérős" }
-        ];
+<script>
+// ═══════════════════════════════════════════
+//  ADATBÁZIS
+// ═══════════════════════════════════════════
+const adatbazis = [
+    // ── GYÜMÖLCS ──
+    { code: 1,    name: "Banán",                          cat: "Gyümölcs", unit: "mérős" },
+    { code: 4,    name: "Bandázsolt banán",               cat: "Gyümölcs", unit: "mérős" },
+    { code: 5,    name: "Citrom",                         cat: "Gyümölcs", unit: "mérős" },
+    { code: 6,    name: "Lime citrom",                    cat: "Gyümölcs", unit: "db" },
+    { code: 7,    name: "Nagyméretű citrom",              cat: "Gyümölcs", unit: "mérős" },
+    { code: 10,   name: "Piros grapefruit",               cat: "Gyümölcs", unit: "mérős" },
+    { code: 12,   name: "Mandarin",                       cat: "Gyümölcs", unit: "mérős" },
+    { code: 20,   name: "Narancs",                        cat: "Gyümölcs", unit: "mérős" },
+    { code: 21,   name: "Nagyméretű narancs",             cat: "Gyümölcs", unit: "mérős" },
+    { code: 30,   name: "Pomelo",                         cat: "Gyümölcs", unit: "db" },
+    { code: 31,   name: "Piros pomelo",                   cat: "Gyümölcs", unit: "db" },
+    { code: 33,   name: "Ananász",                        cat: "Gyümölcs", unit: "db" },
+    { code: 34,   name: "Avokádó",                        cat: "Gyümölcs", unit: "db" },
+    { code: 35,   name: "Friss füge",                     cat: "Gyümölcs", unit: "db" },
+    { code: 37,   name: "Datolyaszilva",                  cat: "Gyümölcs", unit: "db" },
+    { code: 40,   name: "Kivi",                           cat: "Gyümölcs", unit: "db" },
+    { code: 41,   name: "Kiwi Gold",                      cat: "Gyümölcs", unit: "db" },
+    { code: 42,   name: "Kókuszdió",                      cat: "Gyümölcs", unit: "db" },
+    { code: 45,   name: "Licsi",                          cat: "Gyümölcs", unit: "mérős" },
+    { code: 46,   name: "Mangó",                          cat: "Gyümölcs", unit: "db" },
+    { code: 49,   name: "Papaja",                         cat: "Gyümölcs", unit: "db" },
+    { code: 52,   name: "Fairtrade Maracuja",             cat: "Gyümölcs", unit: "db" },
+    { code: 54,   name: "Gyömbér",                        cat: "Gyümölcs", unit: "mérős" },
+    { code: 61,   name: "Cseresznye",                     cat: "Gyümölcs", unit: "mérős" },
+    { code: 62,   name: "Meggy",                          cat: "Gyümölcs", unit: "mérős" },
+    { code: 70,   name: "Sárga szilva",                   cat: "Gyümölcs", unit: "mérős" },
+    { code: 71,   name: "Hazai kék szilva",               cat: "Gyümölcs", unit: "mérős" },
+    { code: 72,   name: "Japán szilva",                   cat: "Gyümölcs", unit: "mérős" },
+    { code: 80,   name: "Fehérszőlő",                     cat: "Gyümölcs", unit: "mérős" },
+    { code: 81,   name: "Magnélküli fehérszőlő",          cat: "Gyümölcs", unit: "mérős" },
+    { code: 82,   name: "Pirosszőlő",                     cat: "Gyümölcs", unit: "mérős" },
+    { code: 84,   name: "Kékszőlő",                       cat: "Gyümölcs", unit: "mérős" },
+    { code: 90,   name: "Őszibarack",                     cat: "Gyümölcs", unit: "mérős" },
+    { code: 93,   name: "Nektarin",                       cat: "Gyümölcs", unit: "mérős" },
+    { code: 96,   name: "Sárgabarack",                    cat: "Gyümölcs", unit: "mérős" },
+    { code: 101,  name: "Piros alma Ambrosia",            cat: "Gyümölcs", unit: "mérős" },
+    { code: 103,  name: "Piros alma Braeburn",            cat: "Gyümölcs", unit: "mérős" },
+    { code: 106,  name: "Evelina alma",                   cat: "Gyümölcs", unit: "mérős" },
+    { code: 107,  name: "Piros alma Fuji",                cat: "Gyümölcs", unit: "mérős" },
+    { code: 108,  name: "Piros alma Gala",                cat: "Gyümölcs", unit: "mérős" },
+    { code: 110,  name: "Piros alma Idared",              cat: "Gyümölcs", unit: "mérős" },
+    { code: 111,  name: "Piros alma Jonagold",            cat: "Gyümölcs", unit: "mérős" },
+    { code: 113,  name: "Piros alma Pinova",              cat: "Gyümölcs", unit: "mérős" },
+    { code: 114,  name: "Piros alma Red Chief",           cat: "Gyümölcs", unit: "mérős" },
+    { code: 118,  name: "Pirosalma ömlesztett",           cat: "Gyümölcs", unit: "mérős" },
+    { code: 122,  name: "Gránátalma",                     cat: "Gyümölcs", unit: "db" },
+    { code: 130,  name: "Zöldalma golden",                cat: "Gyümölcs", unit: "mérős" },
+    { code: 132,  name: "Zöld alma Granny Smith",         cat: "Gyümölcs", unit: "mérős" },
+    { code: 133,  name: "Zöldalma ömlesztett",            cat: "Gyümölcs", unit: "mérős" },
+    { code: 142,  name: "Körte Conference",               cat: "Gyümölcs", unit: "mérős" },
+    { code: 148,  name: "Nashi körte",                    cat: "Gyümölcs", unit: "db" },
+    { code: 153,  name: "Körte Piros",                    cat: "Gyümölcs", unit: "mérős" },
+    { code: 161,  name: "Cantaloupedinnye",               cat: "Gyümölcs", unit: "db" },
+    { code: 167,  name: "Gáliadinnye",                    cat: "Gyümölcs", unit: "mérős" },
+    { code: 173,  name: "Görögdinnye",                    cat: "Gyümölcs", unit: "mérős" },
+    { code: 174,  name: "Magszegény görögdinnye",         cat: "Gyümölcs", unit: "mérős" },
+    { code: 176,  name: "Mini görögdinnye",               cat: "Gyümölcs", unit: "mérős" },
+    { code: 180,  name: "Bio Banán",                      cat: "Gyümölcs", unit: "mérős" },
+    { code: 184,  name: "Bio mangó",                      cat: "Gyümölcs", unit: "db" },
+    { code: 3507, name: "Cosmic Crips alma",              cat: "Gyümölcs", unit: "mérős" },
+    { code: 4130, name: "Pirosalma Pink Lady",            cat: "Gyümölcs", unit: "mérős" },
+    { code: 4196, name: "Pirosalma Crimson snow",         cat: "Gyümölcs", unit: "mérős" },
 
-        const KATEGORIAK = [
-            { name: "Gyümölcs 🍎", filter: p => p.cat === "Gyümölcs" },
-            { name: "Összes 🛒", filter: p => true }
-        ];
+    // ── ZÖLDSÉG (ZGY) ──
+    { code: 202, name: "Fejessaláta gyökérrel",           cat: "Zöldség", unit: "db" },
+    { code: 204, name: "Fejessaláta",                     cat: "Zöldség", unit: "db" },
+    { code: 207, name: "Jégsaláta",                       cat: "Zöldség", unit: "db" },
+    { code: 208, name: "Lollo Bionda saláta gyökérrel",   cat: "Zöldség", unit: "db" },
+    { code: 210, name: "Multcolor-Lollo saláta",          cat: "Zöldség", unit: "db" },
+    { code: 212, name: "Multicolor saláta",               cat: "Zöldség", unit: "db" },
+    { code: 214, name: "Római saláta",                    cat: "Zöldség", unit: "db" },
+    { code: 220, name: "Retek csomós",                    cat: "Zöldség", unit: "db" },
+    { code: 221, name: "Jégcsapretek",                    cat: "Zöldség", unit: "db" },
+    { code: 222, name: "Fekete retek lédig",              cat: "Zöldség", unit: "mérős" },
+    { code: 223, name: "Vajretek",                        cat: "Zöldség", unit: "db" },
+    { code: 230, name: "Hegyes erőspaprika",              cat: "Zöldség", unit: "db" },
+    { code: 233, name: "Pritamin paprika lédig",          cat: "Zöldség", unit: "mérős" },
+    { code: 234, name: "Kaliforniai paprika lédig",       cat: "Zöldség", unit: "mérős" },
+    { code: 236, name: "Piros hegyes paprika lédig",      cat: "Zöldség", unit: "mérős" },
+    { code: 238, name: "TV paprika lédig",                cat: "Zöldség", unit: "mérős" },
+    { code: 250, name: "Fürtös paradicsom lédig",         cat: "Zöldség", unit: "mérős" },
+    { code: 252, name: "Hamburger paradicsom lédig",      cat: "Zöldség", unit: "mérős" },
+    { code: 254, name: "Málna paradicsom lédig",          cat: "Zöldség", unit: "mérős" },
+    { code: 256, name: "Ökörszív paradicsom lédig",       cat: "Zöldség", unit: "mérős" },
+    { code: 258, name: "Cherry fürtös paradicsom lédig",  cat: "Zöldség", unit: "mérős" },
+    { code: 270, name: "Kovászolni való uborka lédig",    cat: "Zöldség", unit: "mérős" },
+    { code: 272, name: "Salátauborka lédig",              cat: "Zöldség", unit: "mérős" },
+    { code: 275, name: "Kígyóuborka",                    cat: "Zöldség", unit: "db" },
+    { code: 283, name: "Sütőtök lédig",                   cat: "Zöldség", unit: "mérős" },
+    { code: 284, name: "Muskotályos sütőtök lédig",       cat: "Zöldség", unit: "mérős" },
+    { code: 286, name: "Hokkaido tök lédig",              cat: "Zöldség", unit: "mérős" },
+    { code: 291, name: "Cukkini lédig",                   cat: "Zöldség", unit: "mérős" },
+    { code: 293, name: "Padlizsán lédig",                 cat: "Zöldség", unit: "mérős" },
+    { code: 300, name: "Fejeskáposzta lédig",             cat: "Zöldség", unit: "mérős" },
+    { code: 301, name: "Új fejeskáposzta lédig",          cat: "Zöldség", unit: "mérős" },
+    { code: 302, name: "Vöröskáposzta lédig",             cat: "Zöldség", unit: "mérős" },
+    { code: 305, name: "Kínai kel lédig",                 cat: "Zöldség", unit: "mérős" },
+    { code: 306, name: "Pak Choi",                        cat: "Zöldség", unit: "db" },
+    { code: 308, name: "Karfiol",                         cat: "Zöldség", unit: "db" },
+    { code: 320, name: "Vöröshagyma lédig",               cat: "Zöldség", unit: "mérős" },
+    { code: 321, name: "Tisztított hagyma lédig",         cat: "Zöldség", unit: "mérős" },
+    { code: 330, name: "Fehér hagyma lédig",              cat: "Zöldség", unit: "mérős" },
+    { code: 331, name: "Lilahagyma lédig",                cat: "Zöldség", unit: "mérős" },
+    { code: 332, name: "Újhagyma csomó",                  cat: "Zöldség", unit: "db" },
+    { code: 334, name: "Főzőhagyma csomó",                cat: "Zöldség", unit: "db" },
+    { code: 337, name: "Póréhagyma",                      cat: "Zöldség", unit: "db" },
+    { code: 339, name: "Fokhagyma lédig",                 cat: "Zöldség", unit: "mérős" },
+    { code: 342, name: "Friss fokhagyma csomó",           cat: "Zöldség", unit: "db" },
+    { code: 350, name: "Piros burgonya lédig",            cat: "Zöldség", unit: "mérős" },
+    { code: 357, name: "Sárga burgonya lédig",            cat: "Zöldség", unit: "mérős" },
+    { code: 359, name: "Magyar sárga újburgonya",         cat: "Zöldség", unit: "mérős" },
+    { code: 361, name: "Édesburgonya lédig",              cat: "Zöldség", unit: "mérős" },
+    { code: 363, name: "Csicsóka lédig",                  cat: "Zöldség", unit: "mérős" },
+    { code: 364, name: "Zeller lédig",                    cat: "Zöldség", unit: "mérős" },
+    { code: 365, name: "Zeller zölddel",                  cat: "Zöldség", unit: "mérős" },
+    { code: 366, name: "Karalábé",                        cat: "Zöldség", unit: "mérős" },
+    { code: 369, name: "Cékla lédig",                     cat: "Zöldség", unit: "mérős" },
+    { code: 371, name: "Sárgarépa lédig",                 cat: "Zöldség", unit: "mérős" },
+    { code: 372, name: "Csomós répa (sárgarépa zölddel)", cat: "Zöldség", unit: "db" },
+    { code: 374, name: "Petrezselyemgyökér lédig",        cat: "Zöldség", unit: "mérős" },
+    { code: 375, name: "Petrezselyemgyökér zölddel",      cat: "Zöldség", unit: "mérős" },
+    { code: 376, name: "Torma lédig",                     cat: "Zöldség", unit: "mérős" },
+    { code: 381, name: "Csiperkegomba lédig",             cat: "Zöldség", unit: "mérős" },
+    { code: 393, name: "Édeskömény lédig",                cat: "Zöldség", unit: "mérős" },
+    { code: 399, name: "Rettertüte (ZGY)",                cat: "Zöldség", unit: "db" },
+    { code: 550, name: "Brokkoli (500g)",                  cat: "Zöldség", unit: "db" },
+    { code: 789, name: "Bio uborka",                      cat: "Zöldség", unit: "db" },
 
-        // --- ÁLLAPOTVÁLTOZÓK ---
-        let activeList = [];
-        let gameQueue = [];         // Keverített sor (mindkét módban)
-        let lastItem = null;        // Előző tétel (tanuló módban ismétlés elkerülés)
-        let currentItem = null;
-        let currentMode = 'tanulo';
-        let inputText = "";
-        let streak = 0;
-        let isWaiting = false;
-        let pluVisible = true;
-        let successCount = 0;
-        let totalCount = 0;
-        let hintShown = false;
+    // ── BOFF ÉDES / FÁNK ──
+    { code: 800, name: "Almás háromszög, 110g",                    cat: "BOFF Édes", unit: "db" },
+    { code: 802, name: "Belga csokis-meggyes párna, 90g",          cat: "BOFF Édes", unit: "db" },
+    { code: 803, name: "Briós cukor szórattal, 65g",               cat: "BOFF Édes", unit: "db" },
+    { code: 805, name: "Csokis croissant, 100g",                   cat: "BOFF Édes", unit: "db" },
+    { code: 809, name: "Csokoládés tekercs, 65g",                  cat: "BOFF Édes", unit: "db" },
+    { code: 811, name: "Dupla csokis párna, 90g",                  cat: "BOFF Édes", unit: "db" },
+    { code: 814, name: "Fahéjas csiga, 120g",                      cat: "BOFF Édes", unit: "db" },
+    { code: 817, name: "Fahéjas tekercs, 65g",                     cat: "BOFF Édes", unit: "db" },
+    { code: 820, name: "Kakaós csiga teljes kiőrlésű, 100g",       cat: "BOFF Édes", unit: "db" },
+    { code: 821, name: "Kakaós csiga, 120g",                       cat: "BOFF Édes", unit: "db" },
+    { code: 824, name: "Mákos búrkifli, 120g",                     cat: "BOFF Édes", unit: "db" },
+    { code: 825, name: "Mákos guba, 100g",                         cat: "BOFF Édes", unit: "db" },
+    { code: 827, name: "Meggyes-mákos rétes, 105g",                cat: "BOFF Édes", unit: "db" },
+    { code: 831, name: "Mogyorókrémes croissant, 85g",             cat: "BOFF Édes", unit: "db" },
+    { code: 837, name: "Pisztáciás kovászos croissant, 80g",       cat: "BOFF Édes", unit: "db" },
+    { code: 839, name: "Sárgabarackos-túrós párna, 90g",           cat: "BOFF Édes", unit: "db" },
+    { code: 841, name: "Szilvás pur pur batyu, 100g",              cat: "BOFF Édes", unit: "db" },
+    { code: 843, name: "Túrós táska, 135g",                        cat: "BOFF Édes", unit: "db" },
+    { code: 844, name: "Túrós-csokis párna, 90g",                  cat: "BOFF Édes", unit: "db" },
+    { code: 845, name: "Vajas croissant, 57g",                     cat: "BOFF Édes", unit: "db" },
+    { code: 846, name: "Vajas fonott kalács, 250g",                cat: "BOFF Édes", unit: "db" },
+    { code: 851, name: "Vitajó aranygaluska csiga, 100g",          cat: "BOFF Édes", unit: "db" },
+    { code: 987, name: "Almás-fahéjas fánk, 62g",                  cat: "BOFF Édes", unit: "db" },
+    { code: 989, name: "Cookie Monster 60g",                       cat: "BOFF Édes", unit: "db" },
+    { code: 992, name: "Csokis fánk, csokiszórással, 56g",         cat: "BOFF Édes", unit: "db" },
+    { code: 993, name: "Epres fánk, színes szórással, 53g",        cat: "BOFF Édes", unit: "db" },
+    { code: 997, name: "Mogyorós töltött fánk, 68g",               cat: "BOFF Édes", unit: "db" },
+    { code: 999, name: "Töltött fánk, 65g",                        cat: "BOFF Édes", unit: "db" },
 
-        // Statisztika (csak gyakorló módhoz)
-        let errorCount = 0;
-        let hintCount = 0;
-        let timerInterval = null;
-        let startTime = null;
-        let elapsedSeconds = 0;
+    // ── BOFF SÓS / KENYÉR / KIFLI ──
+    { code: 502, name: "Nosztalgia kifli, 85g",                            cat: "BOFF Sós", unit: "db" },
+    { code: 503, name: "Nosztalgia kifli teljes kiőrlésű, 90g",            cat: "BOFF Sós", unit: "db" },
+    { code: 504, name: "Nosztalgia kifli sajttal, 95g",                    cat: "BOFF Sós", unit: "db" },
+    { code: 505, name: "Pur Pur Stangli, teljes kiőrlésű 90g",             cat: "BOFF Sós", unit: "db" },
+    { code: 507, name: "Sajtos snack rúd, 95g",                           cat: "BOFF Sós", unit: "db" },
+    { code: 510, name: "Olívás stangli, 80g",                              cat: "BOFF Sós", unit: "db" },
+    { code: 523, name: "Durum baguette, 150g",                             cat: "BOFF Sós", unit: "db" },
+    { code: 528, name: "Francia Baguette, 125g",                           cat: "BOFF Sós", unit: "db" },
+    { code: 543, name: "Császárbuci, 55g",                                 cat: "BOFF Sós", unit: "db" },
+    { code: 544, name: "Buci, 65g",                                        cat: "BOFF Sós", unit: "db" },
+    { code: 545, name: "Magvas császárbuci teljes kiőrlésű, 65g",          cat: "BOFF Sós", unit: "db" },
+    { code: 562, name: "Régi idők roppanós kenyere, 500g",                 cat: "BOFF Sós", unit: "db" },
+    { code: 563, name: "Deluxe Pilisi vadkovászos kenyér, 500g",           cat: "BOFF Sós", unit: "db" },
+    { code: 566, name: "Házi vekni, 500g",                                 cat: "BOFF Sós", unit: "db" },
+    { code: 567, name: "Burgonyás vekni kovásszal, 420g",                  cat: "BOFF Sós", unit: "db" },
+    { code: 570, name: "Kovászos búzakenyér, 500g",                        cat: "BOFF Sós", unit: "db" },
+    { code: 571, name: "Kovászos cipó, 400g",                              cat: "BOFF Sós", unit: "db" },
+    { code: 576, name: "Lepénykenyér, 100g",                               cat: "BOFF Sós", unit: "db" },
+    { code: 577, name: "Light kocka, 250g",                                cat: "BOFF Sós", unit: "db" },
+    { code: 578, name: "Mediterrán ciabatta olívás, 300g",                 cat: "BOFF Sós", unit: "db" },
+    { code: 579, name: "Mediterrán ciabatta fehér, 300g",                  cat: "BOFF Sós", unit: "db" },
+    { code: 580, name: "Nosztalgia Vekni Kovásszal, 330g",                 cat: "BOFF Sós", unit: "db" },
+    { code: 581, name: "Pilis Kovászos rozscipó, 400g",                    cat: "BOFF Sós", unit: "db" },
+    { code: 582, name: "Sokmagvas cipó, 350g",                             cat: "BOFF Sós", unit: "db" },
+    { code: 587, name: "Kovászos durum vekni, 400g",                       cat: "BOFF Sós", unit: "db" },
+    { code: 600, name: "Baconos kenyérlángos, 150g",                       cat: "BOFF Sós", unit: "db" },
+    { code: 603, name: "Betyár pogácsa, 77g",                              cat: "BOFF Sós", unit: "db" },
+    { code: 604, name: "Bolognai párna, 100g",                             cat: "BOFF Sós", unit: "db" },
+    { code: 605, name: "Börek spenóttal és sajttal, 90g",                  cat: "BOFF Sós", unit: "db" },
+    { code: 608, name: "Gyros párna, 90g",                                 cat: "BOFF Sós", unit: "db" },
+    { code: 610, name: "Kolbászos tekercs, 65g",                           cat: "BOFF Sós", unit: "db" },
+    { code: 611, name: "Jalapenos-sajtkrémes csiga, 95g",                  cat: "BOFF Sós", unit: "db" },
+    { code: 613, name: "Kovászos krémsajtos pogácsa",                      cat: "BOFF Sós", unit: "mérős" },
+    { code: 615, name: "Medve sajtos párna, 90g",                          cat: "BOFF Sós", unit: "db" },
+    { code: 621, name: "Pizzás csiga, 100g",                               cat: "BOFF Sós", unit: "db" },
+    { code: 623, name: "Pizzás-sonkás háromszög, 90g",                     cat: "BOFF Sós", unit: "db" },
+    { code: 624, name: "Pogácsa sajttal, 77g",                             cat: "BOFF Sós", unit: "db" },
+    { code: 626, name: "Sajtkrémes zöldfűszeres tekercs, 85g",             cat: "BOFF Sós", unit: "db" },
+    { code: 629, name: "Sajtos-sonkás croissant, 95g",                     cat: "BOFF Sós", unit: "db" },
+    { code: 631, name: "Sertésvirsli párna, 100g",                         cat: "BOFF Sós", unit: "db" },
+    { code: 633, name: "Sonkás-goudás buci, 90g",                          cat: "BOFF Sós", unit: "db" },
+];
 
-        // --- SEGÉDFÜGGVÉNYEK ---
-        function shuffleArray(arr) {
-            const a = [...arr];
-            for (let i = a.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [a[i], a[j]] = [a[j], a[i]];
-            }
-            return a;
+// ═══════════════════════════════════════════
+//  KATEGÓRIÁK
+// ═══════════════════════════════════════════
+const KATEGORIAK = [
+    { id: "gyumolcs",  name: "Gyümölcs",   icon: "🍎", css: "gyumolcs",  filter: p => p.cat === "Gyümölcs" },
+    { id: "zoldseg",   name: "Zöldség",    icon: "🥦", css: "zoldseg",   filter: p => p.cat === "Zöldség" },
+    { id: "boff-edes", name: "BOFF Édes",  icon: "🥐", css: "boff-edes", filter: p => p.cat === "BOFF Édes" },
+    { id: "boff-sos",  name: "BOFF Sós",   icon: "🥖", css: "boff-sos",  filter: p => p.cat === "BOFF Sós" },
+    { id: "osszes",    name: "Összes",     icon: "🛒", css: "osszes",    filter: p => true },
+];
+
+// ═══════════════════════════════════════════
+//  ÁLLAPOT
+// ═══════════════════════════════════════════
+let activeList = [];
+let gameQueue  = [];
+let lastItem   = null;
+let currentItem = null;
+let currentMode = 'tanulo';
+let inputText = "";
+let streak = 0;
+let isWaiting = false;
+let pluVisible = true;
+let successCount = 0;
+let totalCount = 0;
+let hintShown = false;
+let errorCount = 0;
+let hintCount  = 0;
+let timerInterval = null;
+let startTime = null;
+let elapsedSeconds = 0;
+let selectedCatIndex = 0;
+
+// ═══════════════════════════════════════════
+//  SEGÉD
+// ═══════════════════════════════════════════
+function shuffleArray(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+function formatTime(sec) {
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return `${m}:${s.toString().padStart(2, '0')}`;
+}
+function hideAll() {
+    ['menu-screen','mode-screen','app-screen','end-screen'].forEach(id => {
+        const el = document.getElementById(id);
+        el.style.display = 'none';
+    });
+}
+function show(id, displayType = 'block') {
+    hideAll();
+    document.getElementById(id).style.display = displayType;
+}
+
+// ═══════════════════════════════════════════
+//  MENÜ ÉPÍTÉS
+// ═══════════════════════════════════════════
+function initMenu() {
+    const container = document.getElementById('categories');
+    container.innerHTML = '';
+
+    // Sor 1: Gyümölcs + Zöldség
+    const row1 = document.createElement('div');
+    row1.className = 'cat-row';
+
+    // Sor 2: BOFF Édes + BOFF Sós
+    const row2 = document.createElement('div');
+    row2.className = 'cat-row';
+
+    // Sor 3: Összes (full width)
+    const row3 = document.createElement('div');
+    row3.className = 'cat-row';
+
+    KATEGORIAK.forEach((k, i) => {
+        const count = adatbazis.filter(k.filter).length;
+        const btn = document.createElement('button');
+        btn.className = `cat-card ${k.css}`;
+        btn.innerHTML = `
+            <div class="cat-icon">${k.icon}</div>
+            <div class="cat-name">${k.name}</div>
+            <div class="cat-count">${count} termék</div>
+        `;
+        btn.onclick = () => selectCategory(i);
+
+        if (i < 2) row1.appendChild(btn);
+        else if (i < 4) row2.appendChild(btn);
+        else row3.appendChild(btn);
+    });
+
+    const lbl1 = document.createElement('div');
+    lbl1.className = 'group-label';
+    lbl1.textContent = 'Zöldség-Gyümölcs osztály';
+
+    const lbl2 = document.createElement('div');
+    lbl2.className = 'group-label';
+    lbl2.textContent = 'BOFF Pékárú osztály';
+
+    const lbl3 = document.createElement('div');
+    lbl3.className = 'group-label';
+    lbl3.textContent = 'Kombinált';
+
+    container.appendChild(lbl1);
+    container.appendChild(row1);
+    container.appendChild(lbl2);
+    container.appendChild(row2);
+    container.appendChild(lbl3);
+    container.appendChild(row3);
+}
+
+// ═══════════════════════════════════════════
+//  NAVIGÁCIÓ
+// ═══════════════════════════════════════════
+function showMenu() {
+    stopTimer();
+    show('menu-screen');
+}
+function showModeScreen() {
+    stopTimer();
+    show('mode-screen');
+}
+
+function selectCategory(index) {
+    selectedCatIndex = index;
+    const k = KATEGORIAK[index];
+    const count = adatbazis.filter(k.filter).length;
+    document.getElementById('mode-subtitle').innerText = `${k.icon} ${k.name} — ${count} termék`;
+    show('mode-screen');
+}
+
+// ═══════════════════════════════════════════
+//  IDŐZÍTŐ
+// ═══════════════════════════════════════════
+function startTimer() {
+    startTime = Date.now();
+    elapsedSeconds = 0;
+    document.getElementById('timer-display').innerText = '⏱ 0:00';
+    timerInterval = setInterval(() => {
+        elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+        document.getElementById('timer-display').innerText = '⏱ ' + formatTime(elapsedSeconds);
+    }, 1000);
+}
+function stopTimer() {
+    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+}
+
+// ═══════════════════════════════════════════
+//  VÉGE KÉPERNYŐ
+// ═══════════════════════════════════════════
+function showEndScreen() {
+    stopTimer();
+    show('end-screen');
+
+    if (currentMode === 'gyakorlo') {
+        document.getElementById('end-emoji').innerText = errorCount === 0 ? '🏆' : (errorCount <= 5 ? '🎉' : '💪');
+        document.getElementById('end-title').innerText = errorCount === 0 ? 'Hibátlan! Szuperál!' : 'Gratulálok!';
+        document.getElementById('end-subtitle').innerText = 'Sikerült az összes terméket teljesíteni!';
+        const grid = document.getElementById('stat-grid');
+        grid.style.display = 'grid';
+        grid.innerHTML = `
+            <div class="stat-card">
+                <div class="stat-icon">⏱</div>
+                <div class="stat-value">${formatTime(elapsedSeconds)}</div>
+                <div class="stat-label">Eltelt idő</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">❌</div>
+                <div class="stat-value" style="color:${errorCount===0?'var(--streak-ok)':'var(--streak-err)'}">${errorCount}</div>
+                <div class="stat-label">Elrontott válasz</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🚨</div>
+                <div class="stat-value" style="color:${hintCount===0?'var(--streak-ok)':'#ffcc00'}">${hintCount}</div>
+                <div class="stat-label">Felhasznált puska</div>
+            </div>
+        `;
+    } else {
+        document.getElementById('end-emoji').innerText = '🎉';
+        document.getElementById('end-title').innerText = 'Gratulálok!';
+        document.getElementById('end-subtitle').innerText = 'Sikerült az összes terméket megtanulni!';
+        document.getElementById('stat-grid').style.display = 'none';
+    }
+}
+
+function restartGame() { startGame(currentMode); }
+
+// ═══════════════════════════════════════════
+//  JÁTÉK LOGIKA
+// ═══════════════════════════════════════════
+function startGame(mode) {
+    currentMode = mode;
+    activeList = adatbazis.filter(KATEGORIAK[selectedCatIndex].filter);
+    if (activeList.length === 0) return;
+
+    successCount = 0;
+    totalCount   = activeList.length;
+    errorCount   = 0;
+    hintCount    = 0;
+    lastItem     = null;
+    gameQueue    = shuffleArray(activeList);
+
+    show('app-screen', 'flex');
+
+    // Felső sáv kategória tag
+    document.getElementById('cat-tag-display').innerText =
+        KATEGORIAK[selectedCatIndex].icon + ' ' + KATEGORIAK[selectedCatIndex].name;
+
+    const isGyakorlo = currentMode === 'gyakorlo';
+    document.getElementById('streak-2').style.visibility = isGyakorlo ? 'hidden' : 'visible';
+    document.getElementById('streak-3').style.visibility = isGyakorlo ? 'hidden' : 'visible';
+    document.getElementById('hint-btn').disabled     = !isGyakorlo;
+    document.getElementById('hint-btn').style.opacity = isGyakorlo ? '1' : '0.4';
+
+    const timerEl = document.getElementById('timer-display');
+    if (isGyakorlo) {
+        timerEl.style.display = 'block';
+        startTimer();
+    } else {
+        timerEl.style.display = 'none';
+        stopTimer();
+    }
+
+    nextProduct();
+}
+
+function nextProduct() {
+    if (gameQueue.length === 0) { showEndScreen(); return; }
+
+    // Tanuló mód: ne jöjjön egymás után ugyanaz
+    if (currentMode === 'tanulo' && lastItem && gameQueue.length > 1) {
+        if (gameQueue[0].code === lastItem.code) {
+            const swapIdx = 1 + Math.floor(Math.random() * (gameQueue.length - 1));
+            [gameQueue[0], gameQueue[swapIdx]] = [gameQueue[swapIdx], gameQueue[0]];
         }
+    }
 
-        function formatTime(sec) {
-            const m = Math.floor(sec / 60);
-            const s = sec % 60;
-            return `${m}:${s.toString().padStart(2, '0')}`;
-        }
+    currentItem = gameQueue.shift();
+    lastItem = currentItem;
 
-        function hideAllScreens() {
-            document.getElementById('menu-screen').style.display = 'none';
-            document.getElementById('mode-screen').style.display = 'none';
-            document.getElementById('app-screen').style.display = 'none';
-            document.getElementById('end-screen').style.display = 'none';
-        }
+    document.getElementById('counter-display').innerText = `${successCount} / ${totalCount}`;
+    document.getElementById('product-name').innerText = currentItem.name;
 
-        // --- NAVIGÁCIÓ ---
-        function initMenu() {
-            const container = document.getElementById('categories');
-            container.innerHTML = "";
-            KATEGORIAK.forEach((k, index) => {
-                const count = adatbazis.filter(k.filter).length;
-                const btn = document.createElement('button');
-                btn.className = 'cat-btn';
-                btn.innerHTML = `${k.name} <br><span style="font-size:0.9rem; color:var(--subtext)">${count} termék</span>`;
-                btn.onclick = () => selectCategory(index);
-                container.appendChild(btn);
-            });
-        }
+    if (currentItem.unit === "mérős") {
+        document.getElementById('unit-icon').innerText = "⚖";
+        document.getElementById('unit-text').innerText = "Mérős";
+    } else {
+        document.getElementById('unit-icon').innerText = "1";
+        document.getElementById('unit-text').innerText = "Darab";
+    }
+    resetInputState();
+}
 
-        function showMenu() {
-            stopTimer();
-            hideAllScreens();
-            document.getElementById('menu-screen').style.display = 'block';
-        }
+function resetInputState() {
+    streak = 0;
+    inputText = "";
+    pluVisible = (currentMode === 'tanulo');
+    isWaiting = false;
+    hintShown = false;
 
-        let selectedCategoryIndex = 0;
-        let selectedFilterFn = null;
+    document.getElementById('input-display').innerText = "";
+    const hintBar = document.getElementById('plu-hint');
+    hintBar.style.backgroundColor = "var(--plu-bar)";
+    hintBar.style.color = "white";
+    hintBar.innerText = currentMode === 'tanulo' ? currentItem.code : "";
 
-        function selectCategory(index) {
-            selectedCategoryIndex = index;
-            selectedFilterFn = KATEGORIAK[index].filter;
-            const count = adatbazis.filter(selectedFilterFn).length;
-            document.getElementById('mode-subtitle').innerText = `${KATEGORIAK[index].name} kategória (${count} termék)`;
-            hideAllScreens();
-            document.getElementById('mode-screen').style.display = 'block';
-        }
+    ['streak-1','streak-2','streak-3'].forEach(id =>
+        document.getElementById(id).style.backgroundColor = "var(--streak-bg)"
+    );
+}
 
-        function showModeScreen() {
-            stopTimer();
-            hideAllScreens();
-            document.getElementById('mode-screen').style.display = 'block';
-        }
+// ═══════════════════════════════════════════
+//  GOMB LOGIKA
+// ═══════════════════════════════════════════
+function pressNum(val) {
+    if (isWaiting) return;
+    if (val === "00") { if (inputText.length <= 2) inputText += val; }
+    else              { if (inputText.length < 4)  inputText += val; }
+    document.getElementById('input-display').innerText = inputText;
 
-        // --- IDŐZÍTŐ ---
-        function startTimer() {
-            startTime = Date.now();
-            elapsedSeconds = 0;
-            document.getElementById('timer-display').innerText = '⏱ 0:00';
-            timerInterval = setInterval(() => {
-                elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
-                document.getElementById('timer-display').innerText = '⏱ ' + formatTime(elapsedSeconds);
-            }, 1000);
-        }
+    if (pluVisible && currentMode === 'tanulo') {
+        document.getElementById('plu-hint').innerText = "";
+        pluVisible = false;
+    }
+    if (hintShown) {
+        document.getElementById('plu-hint').innerText = "";
+        hintShown = false;
+    }
+}
 
-        function stopTimer() {
-            if (timerInterval) {
-                clearInterval(timerInterval);
-                timerInterval = null;
-            }
-        }
+function pressC() {
+    if (isWaiting) return;
+    inputText = "";
+    document.getElementById('input-display').innerText = "";
+    if (hintShown) {
+        document.getElementById('plu-hint').innerText = "";
+        hintShown = false;
+    }
+}
 
-        // --- VÉGE KÉPERNYŐ ---
-        function showEndScreen() {
-            stopTimer();
-            hideAllScreens();
+function pressPlu() {
+    if (isWaiting || inputText === "") return;
+    const numVal = parseInt(inputText, 10);
+    const hintBar = document.getElementById('plu-hint');
 
-            const screen = document.getElementById('end-screen');
-            screen.style.display = 'block';
+    if (numVal === currentItem.code) {
+        streak++;
+        document.getElementById('streak-' + streak).style.backgroundColor = "var(--streak-ok)";
+        const roundDone = (currentMode === 'gyakorlo' && streak === 1) || (currentMode === 'tanulo' && streak === 3);
 
-            if (currentMode === 'gyakorlo') {
-                // Statisztikás vége
-                document.getElementById('end-emoji').innerText = errorCount === 0 ? '🏆' : (errorCount <= 5 ? '🎉' : '💪');
-                document.getElementById('end-title').innerText = errorCount === 0 ? 'Hibátlan! Szuperál!' : 'Gratulálok!';
-                document.getElementById('end-subtitle').innerText = 'Sikerült az összes terméket teljesíteni!';
-
-                const grid = document.getElementById('stat-grid');
-                grid.style.display = 'grid';
-                grid.innerHTML = `
-                    <div class="stat-card">
-                        <div class="stat-icon">⏱</div>
-                        <div class="stat-value">${formatTime(elapsedSeconds)}</div>
-                        <div class="stat-label">Eltelt idő</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">❌</div>
-                        <div class="stat-value" style="color:${errorCount === 0 ? 'var(--streak-ok)' : 'var(--streak-err)'}">${errorCount}</div>
-                        <div class="stat-label">Elrontott válasz</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">🚨</div>
-                        <div class="stat-value" style="color:${hintCount === 0 ? 'var(--streak-ok)' : '#ffcc00'}">${hintCount}</div>
-                        <div class="stat-label">Felhasznált puska</div>
-                    </div>
-                `;
-            } else {
-                // Tanuló mód egyszerű vége
-                document.getElementById('end-emoji').innerText = '🎉';
-                document.getElementById('end-title').innerText = 'Gratulálok!';
-                document.getElementById('end-subtitle').innerText = 'Sikerült az összes terméket megtanulni!';
-                document.getElementById('stat-grid').style.display = 'none';
-            }
-        }
-
-        function restartGame() {
-            startGame(currentMode);
-        }
-
-        // --- JÁTÉK LOGIKA ---
-        function startGame(mode) {
-            currentMode = mode;
-            activeList = adatbazis.filter(selectedFilterFn);
-            if (activeList.length === 0) return;
-
-            successCount = 0;
-            totalCount = activeList.length;
-            errorCount = 0;
-            hintCount = 0;
-            lastItem = null;
-
-            // Mindkét módban shuffelt sor
-            gameQueue = shuffleArray(activeList);
-
-            hideAllScreens();
-            document.getElementById('app-screen').style.display = 'flex';
-
-            // UI igazítása módhoz
-            const isGyakorlo = currentMode === 'gyakorlo';
-            document.getElementById('streak-2').style.visibility = isGyakorlo ? 'hidden' : 'visible';
-            document.getElementById('streak-3').style.visibility = isGyakorlo ? 'hidden' : 'visible';
-            document.getElementById('hint-btn').disabled = !isGyakorlo;
-            document.getElementById('hint-btn').style.opacity = isGyakorlo ? '1' : '0.4';
-
-            // Időzítő csak gyakorló módban
-            const timerEl = document.getElementById('timer-display');
-            if (isGyakorlo) {
-                timerEl.style.display = 'block';
-                startTimer();
-            } else {
-                timerEl.style.display = 'none';
-                stopTimer();
-            }
-
-            nextProduct();
-        }
-
-        function nextProduct() {
-            // Ha a sor üres: tanuló módban vége, gyakorló módban ez nem fordulhat elő (vége előbb jön)
-            if (gameQueue.length === 0) {
-                showEndScreen();
-                return;
-            }
-
-            // Tanuló módban: ne jöjjön egymás után ugyanaz a tétel
-            // Ha csak 1 elem maradt, nem tudunk mást tenni
-            if (currentMode === 'tanulo' && lastItem && gameQueue.length > 1) {
-                if (gameQueue[0].code === lastItem.code) {
-                    // Csere az első és egy véletlen másik elem között
-                    const swapIdx = 1 + Math.floor(Math.random() * (gameQueue.length - 1));
-                    [gameQueue[0], gameQueue[swapIdx]] = [gameQueue[swapIdx], gameQueue[0]];
-                }
-            }
-
-            currentItem = gameQueue.shift();
-            lastItem = currentItem;
-
+        if (roundDone) {
+            successCount++;
             document.getElementById('counter-display').innerText = `${successCount} / ${totalCount}`;
-            document.getElementById('product-name').innerText = currentItem.name;
-
-            if (currentItem.unit === "mérős") {
-                document.getElementById('unit-icon').innerText = "⚖";
-                document.getElementById('unit-text').innerText = "Mérős";
-            } else {
-                document.getElementById('unit-icon').innerText = "1";
-                document.getElementById('unit-text').innerText = "Darab";
-            }
-
-            resetInputState();
-        }
-
-        function resetInputState() {
-            streak = 0;
-            inputText = "";
-            pluVisible = (currentMode === 'tanulo');
-            isWaiting = false;
-            hintShown = false;
-
-            document.getElementById('input-display').innerText = inputText;
-
-            const hintBar = document.getElementById('plu-hint');
-            hintBar.style.backgroundColor = "var(--plu-bar)";
-            hintBar.style.color = "white";
-            hintBar.innerText = currentMode === 'tanulo' ? currentItem.code : "";
-
-            document.getElementById('streak-1').style.backgroundColor = "var(--streak-bg)";
-            document.getElementById('streak-2').style.backgroundColor = "var(--streak-bg)";
-            document.getElementById('streak-3').style.backgroundColor = "var(--streak-bg)";
-        }
-
-        // --- GOMB LOGIKA ---
-        function pressNum(val) {
-            if (isWaiting) return;
-
-            if (val === "00") {
-                if (inputText.length <= 2) inputText += val;
-            } else {
-                if (inputText.length < 4) inputText += val;
-            }
-
-            document.getElementById('input-display').innerText = inputText;
-
-            if (pluVisible && currentMode === 'tanulo') {
-                document.getElementById('plu-hint').innerText = "";
-                pluVisible = false;
-            }
-
-            if (hintShown) {
-                document.getElementById('plu-hint').innerText = "";
-                hintShown = false;
-            }
-        }
-
-        function pressC() {
-            if (isWaiting) return;
-            inputText = "";
-            document.getElementById('input-display').innerText = inputText;
-            if (hintShown) {
-                document.getElementById('plu-hint').innerText = "";
-                hintShown = false;
-            }
-        }
-
-        function pressPlu() {
-            if (isWaiting || inputText === "") return;
-
-            const numVal = parseInt(inputText, 10);
-            const hintBar = document.getElementById('plu-hint');
-
-            if (numVal === currentItem.code) {
-                // --- HELYES ---
-                streak++;
-                document.getElementById('streak-' + streak).style.backgroundColor = "var(--streak-ok)";
-
-                const roundDone = (currentMode === 'gyakorlo' && streak === 1) || (currentMode === 'tanulo' && streak === 3);
-
-                if (roundDone) {
-                    successCount++;
-                    document.getElementById('counter-display').innerText = `${successCount} / ${totalCount}`;
-
-                    isWaiting = true;
-                    hintBar.innerText = currentItem.code;
-                    hintBar.style.color = "var(--streak-ok)";
-
-                    // Vége van-e?
-                    if (gameQueue.length === 0) {
-                        setTimeout(showEndScreen, 900);
-                    } else {
-                        setTimeout(nextProduct, 1000);
-                    }
-                } else {
-                    inputText = "";
-                    document.getElementById('input-display').innerText = inputText;
-                }
-            } else {
-                // --- HELYTELEN ---
-                isWaiting = true;
-                if (currentMode === 'gyakorlo') errorCount++;
-
-                const errorBox = (currentMode === 'gyakorlo') ? 1 : streak + 1;
-                if (errorBox <= 3) {
-                    document.getElementById('streak-' + errorBox).style.backgroundColor = "var(--streak-err)";
-                }
-
-                if (currentMode === 'gyakorlo') {
-                    hintBar.style.backgroundColor = "var(--streak-err)";
-                }
-
-                setTimeout(() => {
-                    resetInputState();
-                }, 1000);
-            }
-        }
-
-        function pressHint() {
-            if (isWaiting || currentMode !== 'gyakorlo') return;
-            hintCount++;
-            const hintBar = document.getElementById('plu-hint');
+            isWaiting = true;
             hintBar.innerText = currentItem.code;
-            hintBar.style.color = "#ffcc00";
-            hintShown = true;
+            hintBar.style.color = "var(--streak-ok)";
+            setTimeout(gameQueue.length === 0 ? showEndScreen : nextProduct, gameQueue.length === 0 ? 900 : 1000);
+        } else {
+            inputText = "";
+            document.getElementById('input-display').innerText = "";
         }
+    } else {
+        isWaiting = true;
+        if (currentMode === 'gyakorlo') errorCount++;
+        const errorBox = currentMode === 'gyakorlo' ? 1 : streak + 1;
+        if (errorBox <= 3) document.getElementById('streak-' + errorBox).style.backgroundColor = "var(--streak-err)";
+        if (currentMode === 'gyakorlo') hintBar.style.backgroundColor = "var(--streak-err)";
+        setTimeout(resetInputState, 1000);
+    }
+}
 
-        // --- FIZIKAI BILLENTYŰZET ---
-        document.addEventListener('keydown', (e) => {
-            if (document.getElementById('app-screen').style.display === 'none') return;
+function pressHint() {
+    if (isWaiting || currentMode !== 'gyakorlo') return;
+    hintCount++;
+    const hintBar = document.getElementById('plu-hint');
+    hintBar.innerText = currentItem.code;
+    hintBar.style.color = "#ffcc00";
+    hintShown = true;
+}
 
-            if (e.key >= '0' && e.key <= '9') {
-                pressNum(e.key);
-            } else if (e.key === 'Enter') {
-                pressPlu();
-            } else if (e.key === 'Backspace' || e.key === 'Escape' || e.key === 'c' || e.key === 'C') {
-                pressC();
-            }
-        });
+// ═══════════════════════════════════════════
+//  BILLENTYŰZET
+// ═══════════════════════════════════════════
+document.addEventListener('keydown', e => {
+    if (document.getElementById('app-screen').style.display === 'none') return;
+    if (e.key >= '0' && e.key <= '9') pressNum(e.key);
+    else if (e.key === 'Enter') pressPlu();
+    else if (['Backspace','Escape','c','C'].includes(e.key)) pressC();
+});
 
-        // Indítás
-        initMenu();
-    </script>
+// INDÍTÁS
+initMenu();
+</script>
 </body>
 </html>
