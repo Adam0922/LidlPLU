@@ -205,6 +205,84 @@
         .btn-plu { background-color: var(--btn-plu); grid-row: span 2; }
         .btn-white { background-color: white; color: #aaa; font-size: clamp(0.7rem, 2dvh, 1.2rem); text-align: center; }
         .btn-ean { background-color: var(--btn-ean); color: #889988; font-size: clamp(1rem, 2.5dvh, 1.5rem); }
+
+        /* ── MOBIL LANDSCAPE GOMB ── */
+        #mobile-btn {
+            display: none;
+            position: fixed;
+            bottom: 18px; right: 18px;
+            z-index: 9999;
+            background: var(--panel);
+            border: 2px solid #89b4fa;
+            color: #89b4fa;
+            border-radius: 50px;
+            padding: 10px 16px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            cursor: pointer;
+            align-items: center;
+            gap: 7px;
+            transition: 0.2s;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        #mobile-btn:active { transform: scale(0.94); }
+        #mobile-btn.ls-on { background: #89b4fa; color: #1e1e2e; border-color: #89b4fa; }
+
+        /* ── LANDSCAPE FORGATÁS ──
+           CSS rotate trick: a body fizikailag elfér portrait
+           szélesben is, csak 90°-kal elforgatjuk. */
+        body.landscape {
+            width: 100dvh;
+            height: 100dvw;
+            transform: rotate(90deg) translateY(-100%);
+            transform-origin: top left;
+            position: fixed;
+            top: 0; left: 0;
+            overflow: hidden;
+        }
+
+        /* Menük: kisebb padding, max-height igazítva */
+        body.landscape #menu-screen,
+        body.landscape #mode-screen,
+        body.landscape #end-screen {
+            padding: 10px 14px;
+            max-height: 100dvw;
+        }
+        body.landscape h1 { font-size: 1.3rem; margin-bottom: 3px; }
+        body.landscape .menu-sub { font-size: 0.8rem; margin-bottom: 10px; }
+        body.landscape .group-label { margin: 8px 0 5px 2px; font-size: 0.65rem; }
+        body.landscape .cat-row { gap: 7px; margin-bottom: 2px; }
+        body.landscape .cat-card { padding: 8px 6px; border-radius: 10px; gap: 3px; }
+        body.landscape .cat-card .cat-icon { font-size: 1.3rem; }
+        body.landscape .cat-card .cat-name { font-size: 0.72rem; }
+        body.landscape .cat-card .cat-count { font-size: 0.6rem; }
+        body.landscape .mode-btn { padding: 14px 8px; font-size: 1rem; }
+        body.landscape .end-emoji { font-size: 2.8rem; margin-bottom: 6px; }
+        body.landscape .end-title { font-size: 1.4rem; }
+        body.landscape .stat-card { padding: 8px 5px; gap: 3px; }
+        body.landscape .stat-icon { font-size: 1.1rem; }
+        body.landscape .stat-value { font-size: 1rem; }
+        body.landscape .end-btn { padding: 12px; font-size: 0.95rem; margin-bottom: 8px; }
+
+        /* App screen landscape méretezés */
+        body.landscape .top-bar { height: 7vw; min-height: 30px; padding: 0 10px; }
+        body.landscape .top-bar .counter { font-size: clamp(0.75rem, 2.2vw, 1rem); }
+        body.landscape .top-bar .timer   { font-size: clamp(0.65rem, 1.8vw, 0.85rem); }
+        body.landscape .top-bar .cat-tag { font-size: clamp(0.6rem, 1.5vw, 0.8rem); }
+        body.landscape .unit-badge { width: clamp(40px, 8vmin, 60px); height: clamp(40px, 8vmin, 60px); }
+        body.landscape .unit-badge .icon { font-size: clamp(0.9rem, 2.8vmin, 1.6rem); }
+        body.landscape .unit-badge .text { font-size: clamp(0.5rem, 1.2vmin, 0.75rem); }
+        body.landscape .product-name { font-size: clamp(1.1rem, 4.5vw, 2.8rem); padding: 1vmin 2vmin; }
+        body.landscape .plu-bar { height: 20vw; min-height: 54px; font-size: clamp(1.8rem, 7vw, 3.5rem); }
+        body.landscape .input-display { height: 11vw; min-height: 38px; font-size: clamp(1.2rem, 3.8vw, 2.2rem); padding: 0 10px; }
+        body.landscape .c-btn { width: 11vw; min-width: 38px; height: 11vw; min-height: 38px; font-size: clamp(0.9rem, 3.2vw, 1.6rem); }
+        body.landscape .streak-dot { width: clamp(12px, 2.8vmin, 20px); height: clamp(8px, 1.8vw, 15px); font-size: 0.65rem; }
+        body.landscape .right-pane { padding: 1.2vmin; }
+        body.landscape .input-row { margin-bottom: 1.2vmin; }
+        body.landscape .numpad { gap: 1vmin; }
+        body.landscape .btn { font-size: clamp(0.85rem, 2.8vw, 1.7rem); border-radius: 6px; }
+        body.landscape .btn-white { font-size: clamp(0.5rem, 1.5vw, 0.82rem); }
+        body.landscape .btn-ean   { font-size: clamp(0.65rem, 1.8vw, 1rem); }
     </style>
 </head>
 <body>
@@ -215,6 +293,12 @@
     <p class="menu-sub">Válaszd ki a kategóriát!</p>
     <div id="categories"></div>
 </div>
+
+<!-- MOBIL LANDSCAPE GOMB (csak mobilon jelenik meg) -->
+<button id="mobile-btn" onclick="toggleLandscape()">
+    <span id="mobile-btn-icon">📱→🖥</span>
+    <span id="mobile-btn-label">Mobil nézet</span>
+</button>
 
 <!-- MÓDVÁLASZTÓ -->
 <div id="mode-screen">
@@ -853,7 +937,55 @@ document.addEventListener('keydown', e => {
     else if (['Backspace','Escape','c','C'].includes(e.key)) pressC();
 });
 
+// ═══════════════════════════════════════════
+//  MOBIL LANDSCAPE MÓD
+// ═══════════════════════════════════════════
+let landscapeOn = false;
+
+function isMobileDevice() {
+    return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)
+        || (navigator.maxTouchPoints > 1 && window.screen.width <= 1024);
+}
+
+function initMobileBtn() {
+    const btn = document.getElementById('mobile-btn');
+    if (isMobileDevice()) {
+        btn.style.display = 'flex';
+    }
+    // Ha volt mentett állapot (pl. oldal újratölt), visszaállítjuk
+    if (localStorage.getItem('plu_landscape') === '1') {
+        applyLandscape(true, false);
+    }
+}
+
+function toggleLandscape() {
+    applyLandscape(!landscapeOn, true);
+}
+
+function applyLandscape(on, save) {
+    landscapeOn = on;
+    const btn = document.getElementById('mobile-btn');
+    const icon  = document.getElementById('mobile-btn-icon');
+    const label = document.getElementById('mobile-btn-label');
+
+    if (on) {
+        document.body.classList.add('landscape');
+        btn.classList.add('ls-on');
+        icon.textContent  = '🖥→📱';
+        label.textContent = 'Normál nézet';
+    } else {
+        document.body.classList.remove('landscape');
+        btn.classList.remove('ls-on');
+        icon.textContent  = '📱→🖥';
+        label.textContent = 'Mobil nézet';
+    }
+    if (save) {
+        try { localStorage.setItem('plu_landscape', on ? '1' : '0'); } catch(e) {}
+    }
+}
+
 // INDÍTÁS
+initMobileBtn();
 initMenu();
 </script>
 </body>
